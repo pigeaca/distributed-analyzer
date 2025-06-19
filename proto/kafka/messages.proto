@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package kafka;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/kafka";
+
+import "google/protobuf/timestamp.proto";
+import "proto/task/task.proto";
+
+// TaskCreatedEvent is published when a new task is created
+message TaskCreatedEvent {
+  string task_id = 1;
+  task.Task task = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+// TaskScheduledEvent is published when a task is scheduled
+message TaskScheduledEvent {
+  string task_id = 1;
+  repeated string worker_ids = 2;
+  google.protobuf.Timestamp scheduled_at = 3;
+}
+
+// TaskAssignedEvent is published when a task is assigned to a worker
+message TaskAssignedEvent {
+  string task_id = 1;
+  string worker_id = 2;
+  google.protobuf.Timestamp assigned_at = 3;
+}
+
+// TaskStatusChangedEvent is published when a task status changes
+message TaskStatusChangedEvent {
+  string task_id = 1;
+  task.Status old_status = 2;
+  task.Status new_status = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// TaskCompletedEvent is published when a task is completed
+message TaskCompletedEvent {
+  string task_id = 1;
+  map<string, string> result = 2;
+  google.protobuf.Timestamp completed_at = 3;
+}
+
+// TaskFailedEvent is published when a task fails
+message TaskFailedEvent {
+  string task_id = 1;
+  string error = 2;
+  google.protobuf.Timestamp failed_at = 3;
+}
+
+// SubTaskCompletedEvent is published when a subtask is completed
+message SubTaskCompletedEvent {
+  string subtask_id = 1;
+  string task_id = 2;
+  string worker_id = 3;
+  map<string, string> result = 4;
+  google.protobuf.Timestamp completed_at = 5;
+}
+
+// WorkerStatusChangedEvent is published when a worker status changes
+message WorkerStatusChangedEvent {
+  string worker_id = 1;
+  string old_status = 2;
+  string new_status = 3;
+  google.protobuf.Timestamp changed_at = 4;
+}
+
+// BillingEvent is published when a billing action occurs
+message BillingEvent {
+  string user_id = 1;
+  string task_id = 2;
+  double amount = 3;
+  string currency = 4;
+  google.protobuf.Timestamp timestamp = 5;
+}
+
+// AuditEvent is published when an audit action occurs
+message AuditEvent {
+  string user_id = 1;
+  string action = 2;
+  string resource = 3;
+  string resource_id = 4;
+  google.protobuf.Timestamp timestamp = 5;
+}

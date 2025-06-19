@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+package task;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/task";
+
+import "google/protobuf/timestamp.proto";
+
+// Task service definition
+service TaskService {
+  // CreateTask creates a new task in the system
+  rpc CreateTask(CreateTaskRequest) returns (TaskResponse);
+
+  // GetTask retrieves a task by its ID
+  rpc GetTask(GetTaskRequest) returns (TaskResponse);
+
+  // UpdateTask updates an existing task
+  rpc UpdateTask(UpdateTaskRequest) returns (TaskResponse);
+
+  // DeleteTask removes a task from the system
+  rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse);
+
+  // ListTasks retrieves all tasks with optional filtering
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
+}
+
+// Status represents the current state of a task
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_PENDING = 1;
+  STATUS_SCHEDULED = 2;
+  STATUS_RUNNING = 3;
+  STATUS_COMPLETED = 4;
+  STATUS_FAILED = 5;
+}
+
+// Resource represents a computational resource
+message Resource {
+  string type = 1;  // CPU, GPU, Memory, etc.
+  int32 value = 2;  // Amount of resource
+}
+
+// Task represents a computational task in the system
+message Task {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  Status status = 4;
+  map<string, string> input = 5;
+  map<string, string> output = 6;
+  repeated Resource resources = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+  google.protobuf.Timestamp completed_at = 10;
+}
+
+// SubTask represents a part of a larger task
+message SubTask {
+  string id = 1;
+  string parent_id = 2;
+  string name = 3;
+  Status status = 4;
+  map<string, string> input = 5;
+  map<string, string> output = 6;
+  string worker_id = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+// CreateTaskRequest is the request for creating a task
+message CreateTaskRequest {
+  string name = 1;
+  string description = 2;
+  map<string, string> input = 3;
+  repeated Resource resources = 4;
+}
+
+// GetTaskRequest is the request for retrieving a task
+message GetTaskRequest {
+  string id = 1;
+}
+
+// UpdateTaskRequest is the request for updating a task
+message UpdateTaskRequest {
+  Task task = 1;
+}
+
+// DeleteTaskRequest is the request for deleting a task
+message DeleteTaskRequest {
+  string id = 1;
+}
+
+// DeleteTaskResponse is the response for deleting a task
+message DeleteTaskResponse {
+  bool success = 1;
+}
+
+// ListTasksRequest is the request for listing tasks
+message ListTasksRequest {
+  // Optional filters can be added here
+}
+
+// ListTasksResponse is the response for listing tasks
+message ListTasksResponse {
+  repeated Task tasks = 1;
+}
+
+// TaskResponse is the response containing a task
+message TaskResponse {
+  Task task = 1;
+}

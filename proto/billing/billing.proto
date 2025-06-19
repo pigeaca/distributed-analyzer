@@ -1,0 +1,94 @@
+syntax = "proto3";
+
+package billing;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/billing";
+
+import "google/protobuf/timestamp.proto";
+
+// Billing service definition
+service BillingService {
+  // ChargeTask charges a user for a completed task
+  rpc ChargeTask(ChargeTaskRequest) returns (BillingRecordResponse);
+
+  // GetUserBalance retrieves a user's current balance
+  rpc GetUserBalance(GetUserBalanceRequest) returns (GetUserBalanceResponse);
+
+  // AddUserBalance adds to a user's balance
+  rpc AddUserBalance(AddUserBalanceRequest) returns (AddUserBalanceResponse);
+
+  // GetBillingHistory retrieves a user's billing history
+  rpc GetBillingHistory(GetBillingHistoryRequest) returns (GetBillingHistoryResponse);
+
+  // CreateBillingRecord creates a new billing record
+  rpc CreateBillingRecord(CreateBillingRecordRequest) returns (BillingRecordResponse);
+}
+
+// BillingRecord represents a billing entry for task execution
+message BillingRecord {
+  string id = 1;
+  string user_id = 2;
+  string task_id = 3;
+  double amount = 4;
+  string currency = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+// UserBalance represents a user's current balance
+message UserBalance {
+  string user_id = 1;
+  double balance = 2;
+  string currency = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+// ChargeTaskRequest is the request for charging a task
+message ChargeTaskRequest {
+  string task_id = 1;
+}
+
+// GetUserBalanceRequest is the request for getting a user's balance
+message GetUserBalanceRequest {
+  string user_id = 1;
+}
+
+// GetUserBalanceResponse is the response for getting a user's balance
+message GetUserBalanceResponse {
+  double balance = 1;
+  string currency = 2;
+}
+
+// AddUserBalanceRequest is the request for adding to a user's balance
+message AddUserBalanceRequest {
+  string user_id = 1;
+  double amount = 2;
+}
+
+// AddUserBalanceResponse is the response for adding to a user's balance
+message AddUserBalanceResponse {
+  bool success = 1;
+  UserBalance balance = 2;
+}
+
+// GetBillingHistoryRequest is the request for getting a user's billing history
+message GetBillingHistoryRequest {
+  string user_id = 1;
+}
+
+// GetBillingHistoryResponse is the response for getting a user's billing history
+message GetBillingHistoryResponse {
+  repeated BillingRecord records = 1;
+}
+
+// CreateBillingRecordRequest is the request for creating a billing record
+message CreateBillingRecordRequest {
+  string user_id = 1;
+  string task_id = 2;
+  double amount = 3;
+  string currency = 4;
+}
+
+// BillingRecordResponse is the response containing a billing record
+message BillingRecordResponse {
+  BillingRecord record = 1;
+}

@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package result;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/result";
+
+import "google/protobuf/timestamp.proto";
+
+// Result service definition
+service ResultAggregatorService {
+  // SavePartialResult saves a partial result for a task
+  rpc SavePartialResult(SavePartialResultRequest) returns (SavePartialResultResponse);
+
+  // FinalizeResult finalizes the result when all subtasks are completed
+  rpc FinalizeResult(FinalizeResultRequest) returns (FinalizeResultResponse);
+
+  // GetResult retrieves the result of a completed task
+  rpc GetResult(GetResultRequest) returns (GetResultResponse);
+
+  // GetTaskResult retrieves the full task result object
+  rpc GetTaskResult(GetTaskResultRequest) returns (TaskResultResponse);
+
+  // GetSubTaskResults retrieves all subtask results for a task
+  rpc GetSubTaskResults(GetSubTaskResultsRequest) returns (SubTaskResultsResponse);
+}
+
+// TaskResult represents the result of a task execution
+message TaskResult {
+  string task_id = 1;
+  string status = 2;
+  map<string, string> result = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+  google.protobuf.Timestamp finished_at = 6;
+}
+
+// SubTaskResult represents the result of a subtask execution
+message SubTaskResult {
+  string subtask_id = 1;
+  string task_id = 2;
+  string worker_id = 3;
+  string status = 4;
+  map<string, string> result = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp finished_at = 8;
+}
+
+// SavePartialResultRequest is the request for saving a partial result
+message SavePartialResultRequest {
+  string task_id = 1;
+  string subtask_id = 2;
+  map<string, string> result = 3;
+}
+
+// SavePartialResultResponse is the response for saving a partial result
+message SavePartialResultResponse {
+  bool success = 1;
+}
+
+// FinalizeResultRequest is the request for finalizing a result
+message FinalizeResultRequest {
+  string task_id = 1;
+}
+
+// FinalizeResultResponse is the response for finalizing a result
+message FinalizeResultResponse {
+  bool success = 1;
+}
+
+// GetResultRequest is the request for getting a result
+message GetResultRequest {
+  string task_id = 1;
+}
+
+// GetResultResponse is the response for getting a result
+message GetResultResponse {
+  map<string, string> result = 1;
+}
+
+// GetTaskResultRequest is the request for getting a task result
+message GetTaskResultRequest {
+  string task_id = 1;
+}
+
+// TaskResultResponse is the response containing a task result
+message TaskResultResponse {
+  TaskResult task_result = 1;
+}
+
+// GetSubTaskResultsRequest is the request for getting subtask results
+message GetSubTaskResultsRequest {
+  string task_id = 1;
+}
+
+// SubTaskResultsResponse is the response containing subtask results
+message SubTaskResultsResponse {
+  repeated SubTaskResult subtask_results = 1;
+}

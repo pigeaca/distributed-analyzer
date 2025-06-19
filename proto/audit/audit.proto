@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+package audit;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/audit";
+
+import "google/protobuf/timestamp.proto";
+
+// Audit service definition
+service AuditService {
+  // LogAction logs an action in the audit system
+  rpc LogAction(LogActionRequest) returns (AuditLogResponse);
+
+  // GetAuditLogs retrieves audit logs with optional filtering
+  rpc GetAuditLogs(GetAuditLogsRequest) returns (GetAuditLogsResponse);
+
+  // GetResourceAuditLogs retrieves audit logs for a specific resource
+  rpc GetResourceAuditLogs(GetResourceAuditLogsRequest) returns (GetAuditLogsResponse);
+
+  // GetUserAuditLogs retrieves audit logs for a specific user
+  rpc GetUserAuditLogs(GetUserAuditLogsRequest) returns (GetAuditLogsResponse);
+}
+
+// AuditAction represents the type of action performed
+enum AuditAction {
+  ACTION_UNSPECIFIED = 0;
+  ACTION_CREATE = 1;
+  ACTION_READ = 2;
+  ACTION_UPDATE = 3;
+  ACTION_DELETE = 4;
+}
+
+// AuditLog represents a system audit entry
+message AuditLog {
+  string id = 1;
+  string user_id = 2;
+  AuditAction action = 3;
+  string resource = 4;
+  string resource_id = 5;
+  google.protobuf.Timestamp timestamp = 6;
+}
+
+// LogActionRequest is the request for logging an action
+message LogActionRequest {
+  string user_id = 1;
+  AuditAction action = 2;
+  string resource = 3;
+  string resource_id = 4;
+}
+
+// AuditLogResponse is the response containing an audit log
+message AuditLogResponse {
+  AuditLog log = 1;
+}
+
+// GetAuditLogsRequest is the request for getting audit logs
+message GetAuditLogsRequest {
+  string user_id = 1;
+  string resource = 2;
+  string from_time = 3;
+  string to_time = 4;
+}
+
+// GetAuditLogsResponse is the response containing audit logs
+message GetAuditLogsResponse {
+  repeated AuditLog logs = 1;
+}
+
+// GetResourceAuditLogsRequest is the request for getting resource audit logs
+message GetResourceAuditLogsRequest {
+  string resource = 1;
+  string resource_id = 2;
+}
+
+// GetUserAuditLogsRequest is the request for getting user audit logs
+message GetUserAuditLogsRequest {
+  string user_id = 1;
+}

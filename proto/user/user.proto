@@ -1,0 +1,120 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/user";
+
+import "google/protobuf/timestamp.proto";
+
+// User service definition
+service UserService {
+  // CreateUser creates a new user in the system
+  rpc CreateUser(CreateUserRequest) returns (UserResponse);
+
+  // GetUser retrieves a user by their ID
+  rpc GetUser(GetUserRequest) returns (UserResponse);
+
+  // UpdateUser updates an existing user
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse);
+
+  // DeleteUser removes a user from the system
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+
+  // ListUsers retrieves all users with optional filtering
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+
+  // AssignRole assigns a role to a user
+  rpc AssignRole(AssignRoleRequest) returns (AssignRoleResponse);
+
+  // GrantPermission grants a permission to a user
+  rpc GrantPermission(GrantPermissionRequest) returns (GrantPermissionResponse);
+}
+
+// UserRole represents a user's role in the system
+enum UserRole {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_ADMIN = 1;
+  ROLE_USER = 2;
+  ROLE_WORKER = 3;
+}
+
+// User represents a system user
+message User {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+// UserPermission represents a user's permission in the system
+message UserPermission {
+  string user_id = 1;
+  string resource = 2;
+  string permission = 3;
+  google.protobuf.Timestamp created_at = 4;
+}
+
+// CreateUserRequest is the request for creating a user
+message CreateUserRequest {
+  string username = 1;
+  string email = 2;
+}
+
+// GetUserRequest is the request for retrieving a user
+message GetUserRequest {
+  string id = 1;
+}
+
+// UpdateUserRequest is the request for updating a user
+message UpdateUserRequest {
+  User user = 1;
+}
+
+// DeleteUserRequest is the request for deleting a user
+message DeleteUserRequest {
+  string id = 1;
+}
+
+// DeleteUserResponse is the response for deleting a user
+message DeleteUserResponse {
+  bool success = 1;
+}
+
+// ListUsersRequest is the request for listing users
+message ListUsersRequest {
+  // Optional filters can be added here
+}
+
+// ListUsersResponse is the response for listing users
+message ListUsersResponse {
+  repeated User users = 1;
+}
+
+// AssignRoleRequest is the request for assigning a role
+message AssignRoleRequest {
+  string user_id = 1;
+  UserRole role = 2;
+}
+
+// AssignRoleResponse is the response for assigning a role
+message AssignRoleResponse {
+  bool success = 1;
+}
+
+// GrantPermissionRequest is the request for granting a permission
+message GrantPermissionRequest {
+  string user_id = 1;
+  string resource = 2;
+  string permission = 3;
+}
+
+// GrantPermissionResponse is the response for granting a permission
+message GrantPermissionResponse {
+  bool success = 1;
+  UserPermission permission = 2;
+}
+
+// UserResponse is the response containing a user
+message UserResponse {
+  User user = 1;
+}

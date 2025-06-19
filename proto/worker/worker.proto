@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package worker;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/worker";
+
+import "google/protobuf/timestamp.proto";
+
+// Worker service definitions
+service WorkerManagerService {
+  // RegisterWorker registers a new worker in the system
+  rpc RegisterWorker(RegisterWorkerRequest) returns (WorkerResponse);
+
+  // GetWorker retrieves a worker by its ID
+  rpc GetWorker(GetWorkerRequest) returns (WorkerResponse);
+
+  // UpdateWorkerStatus updates the status of a worker
+  rpc UpdateWorkerStatus(UpdateWorkerStatusRequest) returns (UpdateWorkerStatusResponse);
+
+  // ListWorkers retrieves all workers with optional filtering
+  rpc ListWorkers(ListWorkersRequest) returns (ListWorkersResponse);
+
+  // FindAvailableWorkers finds workers that can handle a specific task
+  rpc FindAvailableWorkers(FindAvailableWorkersRequest) returns (ListWorkersResponse);
+}
+
+service WorkerNodeService {
+  // ExecuteTask executes a task on the worker
+  rpc ExecuteTask(ExecuteTaskRequest) returns (ExecuteTaskResponse);
+
+  // LoadModel loads a model required for task execution
+  rpc LoadModel(LoadModelRequest) returns (LoadModelResponse);
+
+  // ReportStatus reports the worker's current status
+  rpc ReportStatus(ReportStatusRequest) returns (ReportStatusResponse);
+
+  // SendResult sends the result of a completed task
+  rpc SendResult(SendResultRequest) returns (SendResultResponse);
+}
+
+// Capability represents a worker capability
+message Capability {
+  string name = 1;  // e.g., "resnet50", "gpt-3"
+  string value = 2; // Version or other details
+}
+
+// Resource represents a computational resource
+message Resource {
+  string type = 1;  // CPU, GPU, Memory, etc.
+  int32 value = 2;  // Amount of resource
+}
+
+// Worker represents a node that can execute tasks
+message Worker {
+  string id = 1;
+  string name = 2;
+  string status = 3; // Online, Offline, Busy
+  repeated Capability capabilities = 4;
+  repeated Resource resources = 5;
+  google.protobuf.Timestamp last_seen = 6;
+}
+
+// RegisterWorkerRequest is the request for registering a worker
+message RegisterWorkerRequest {
+  string name = 1;
+  repeated Capability capabilities = 2;
+  repeated Resource resources = 3;
+}
+
+// GetWorkerRequest is the request for retrieving a worker
+message GetWorkerRequest {
+  string id = 1;
+}
+
+// UpdateWorkerStatusRequest is the request for updating a worker status
+message UpdateWorkerStatusRequest {
+  string id = 1;
+  string status = 2;
+}
+
+// UpdateWorkerStatusResponse is the response for updating a worker status
+message UpdateWorkerStatusResponse {
+  bool success = 1;
+}
+
+// ListWorkersRequest is the request for listing workers
+message ListWorkersRequest {
+  // Optional filters can be added here
+}
+
+// ListWorkersResponse is the response for listing workers
+message ListWorkersResponse {
+  repeated Worker workers = 1;
+}
+
+// FindAvailableWorkersRequest is the request for finding available workers
+message FindAvailableWorkersRequest {
+  repeated Capability capabilities = 1;
+  repeated Resource resources = 2;
+}
+
+// ExecuteTaskRequest is the request for executing a task
+message ExecuteTaskRequest {
+  string task_id = 1;
+}
+
+// ExecuteTaskResponse is the response for executing a task
+message ExecuteTaskResponse {
+  bool success = 1;
+}
+
+// LoadModelRequest is the request for loading a model
+message LoadModelRequest {
+  string model_name = 1;
+}
+
+// LoadModelResponse is the response for loading a model
+message LoadModelResponse {
+  bool success = 1;
+}
+
+// ReportStatusRequest is the request for reporting status
+message ReportStatusRequest {
+  string status = 1;
+}
+
+// ReportStatusResponse is the response for reporting status
+message ReportStatusResponse {
+  bool success = 1;
+}
+
+// SendResultRequest is the request for sending a result
+message SendResultRequest {
+  string task_id = 1;
+  map<string, string> result = 2;
+}
+
+// SendResultResponse is the response for sending a result
+message SendResultResponse {
+  bool success = 1;
+}
+
+// WorkerResponse is the response containing a worker
+message WorkerResponse {
+  Worker worker = 1;
+}

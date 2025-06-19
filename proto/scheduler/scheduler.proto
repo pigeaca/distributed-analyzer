@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package scheduler;
+
+option go_package = "github.com/distributedmarketplace/pkg/proto/scheduler";
+
+import "proto/task/task.proto";
+
+// Scheduler service definition
+service SchedulerService {
+  // ScheduleTask assigns a task to appropriate workers
+  rpc ScheduleTask(ScheduleTaskRequest) returns (ScheduleTaskResponse);
+
+  // DivideTask splits a task into subtasks if needed
+  rpc DivideTask(DivideTaskRequest) returns (DivideTaskResponse);
+
+  // AssignTask assigns a task or subtask to a specific worker
+  rpc AssignTask(AssignTaskRequest) returns (AssignTaskResponse);
+
+  // GetTaskStatus retrieves the current status of a task
+  rpc GetTaskStatus(GetTaskStatusRequest) returns (GetTaskStatusResponse);
+}
+
+// SchedulerTask represents a task from the scheduler's perspective
+message SchedulerTask {
+  string task_id = 1;
+  task.Status status = 2;
+  repeated task.SubTask sub_tasks = 3;
+  repeated string worker_ids = 4;
+}
+
+// ScheduleTaskRequest is the request for scheduling a task
+message ScheduleTaskRequest {
+  string task_id = 1;
+}
+
+// ScheduleTaskResponse is the response for scheduling a task
+message ScheduleTaskResponse {
+  bool success = 1;
+}
+
+// DivideTaskRequest is the request for dividing a task
+message DivideTaskRequest {
+  string task_id = 1;
+}
+
+// DivideTaskResponse is the response for dividing a task
+message DivideTaskResponse {
+  repeated task.SubTask sub_tasks = 1;
+}
+
+// AssignTaskRequest is the request for assigning a task
+message AssignTaskRequest {
+  string task_id = 1;
+  string worker_id = 2;
+}
+
+// AssignTaskResponse is the response for assigning a task
+message AssignTaskResponse {
+  bool success = 1;
+}
+
+// GetTaskStatusRequest is the request for getting a task status
+message GetTaskStatusRequest {
+  string task_id = 1;
+}
+
+// GetTaskStatusResponse is the response for getting a task status
+message GetTaskStatusResponse {
+  task.Status status = 1;
+}

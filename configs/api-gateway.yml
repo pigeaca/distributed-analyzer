@@ -1,0 +1,4 @@
+# API Gateway Configuration
+
+# HTTP server port
+port: 8081
