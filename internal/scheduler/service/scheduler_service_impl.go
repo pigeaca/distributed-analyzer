@@ -6,7 +6,8 @@ import (
 	"github.com/distributedmarketplace/internal/scheduler/grpc"
 	"github.com/distributedmarketplace/internal/scheduler/kafka/producer"
 	"github.com/distributedmarketplace/internal/task/model"
-	"github.com/distributedmarketplace/internal/worker/model"
+	workerModel "github.com/distributedmarketplace/internal/worker/model"
+	"github.com/distributedmarketplace/pkg/kafka"
 	"log"
 	"sync"
 )
@@ -16,29 +17,25 @@ var ErrTaskNotFound = errors.New("task not found")
 
 // SchedulerServiceImpl implements the SchedulerService interface
 type SchedulerServiceImpl struct {
-	tasks             map[string]*model.Task
-	taskMu            sync.RWMutex
-	workerClient      *grpc.WorkerManagerClient
-	kafkaProducer     *producer.SchedulerProducer
-	taskServiceAddr   string
-	workerServiceAddr string
+	tasks         map[string]*model.Task
+	taskMu        sync.RWMutex
+	workerClient  *grpc.WorkerManagerClient
+	kafkaProducer *producer.SchedulerProducer
 }
 
 // NewSchedulerServiceImpl creates a new instance of SchedulerServiceImpl
-func NewSchedulerServiceImpl(taskServiceAddr, workerServiceAddr string, kafkaBrokers []string) (*SchedulerServiceImpl, error) {
+func NewSchedulerServiceImpl(workerServiceAddr string, pr *kafka.Producer) (*SchedulerServiceImpl, error) {
 	workerClient, err := grpc.NewWorkerManagerClient(workerServiceAddr)
 	if err != nil {
 		return nil, err
 	}
 
-	kafkaProducer := producer.NewSchedulerProducer(kafkaBrokers)
+	kafkaProducer := producer.NewSchedulerProducer(pr)
 
 	return &SchedulerServiceImpl{
-		tasks:             make(map[string]*model.Task),
-		workerClient:      workerClient,
-		kafkaProducer:     kafkaProducer,
-		taskServiceAddr:   taskServiceAddr,
-		workerServiceAddr: workerServiceAddr,
+		tasks:         make(map[string]*model.Task),
+		workerClient:  workerClient,
+		kafkaProducer: kafkaProducer,
 	}, nil
 }
 
@@ -65,10 +62,10 @@ func (s *SchedulerServiceImpl) ScheduleTask(ctx context.Context, taskID string) 
 	}
 
 	// 2. Find available workers using the worker manager
-	capabilities := []model.Capability{
+	capabilities := []workerModel.Capability{
 		{Name: "default", Value: "1.0"},
 	}
-	resources := []model.Resource{
+	resources := []workerModel.Resource{
 		{Type: "CPU", Value: 1},
 	}
 
@@ -96,7 +93,7 @@ func (s *SchedulerServiceImpl) ScheduleTask(ctx context.Context, taskID string) 
 				return err
 			}
 		} else {
-			// Assign main task to worker if no subtasks
+			// Assign the main task to worker if no subtasks
 			if len(subtasks) == 0 {
 				if err := s.AssignTask(ctx, taskID, worker.ID); err != nil {
 					return err
@@ -148,6 +145,8 @@ func (s *SchedulerServiceImpl) AssignTask(ctx context.Context, taskID string, wo
 	return nil
 }
 
+//@TODO Move to task client
+
 // GetTaskStatus retrieves the current status of a task
 func (s *SchedulerServiceImpl) GetTaskStatus(ctx context.Context, taskID string) (model.Status, error) {
 	log.Printf("Getting status for task %s", taskID)
@@ -157,10 +156,10 @@ func (s *SchedulerServiceImpl) GetTaskStatus(ctx context.Context, taskID string)
 	return model.StatusPending, nil
 }
 
-// Helper function to get task from task service
+// Helper function to get a task from a task service
 func (s *SchedulerServiceImpl) getTaskFromService(ctx context.Context, taskID string) (*model.Task, error) {
 	// In a real implementation, this would call the task service via gRPC
-	// For now, just return a dummy task
+	// For now, return a fake task
 	return &model.Task{
 		ID:     taskID,
 		Status: model.StatusPending,

@@ -10,7 +10,7 @@ type Producer struct {
 	writer *kafka.Writer
 }
 
-func NewTaskProducer(brokers []string) *Producer {
+func NewProducer(brokers []string) *Producer {
 	writer := &kafka.Writer{
 		Addr:     kafka.TCP(brokers...),
 		Balancer: &kafka.LeastBytes{},

@@ -9,7 +9,7 @@ Distributed AI Task Marketplace
 - gRPC/REST entry point
 - Authentication (JWT)
 - Rate Limiting, Throttling
-- Proxy to services
+- Proxy to components
 
 #### Task Service
 - Creation and management of tasks
@@ -91,9 +91,9 @@ Distributed AI Task Marketplace
 5. User can download a result via API Gateway (REST)
 
 ### Monitoring Flow
-1. All services emit metrics to Prometheus
-2. All services send traces to Jaeger via OpenTelemetry
-3. All services log to centralized logging (Loki/FluentBit)
+1. All components emit metrics to Prometheus
+2. All components send traces to Jaeger via OpenTelemetry
+3. All components log to centralized logging (Loki/FluentBit)
 4. AuditService records all significant actions (subscribes to AuditEvent)
 
 ## Protocol Buffers and gRPC

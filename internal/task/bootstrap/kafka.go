@@ -9,7 +9,7 @@ import (
 )
 
 func InitKafka(cfg config.Config, taskService service.TaskService) (*kafka.Producer, *app.KafkaComponent) {
-	producer := kafka.NewTaskProducer(cfg.KafkaBrokers)
+	producer := kafka.NewProducer(cfg.KafkaBrokers)
 	taskHandler := handler.NewTaskMessageHandler(taskService)
 	topics := []string{"task-status-changed", "task-completed", "task-failed"}
 	consumer := kafka.NewConsumer(topics, cfg.KafkaBrokers, cfg.KafkaGroupID, taskHandler)

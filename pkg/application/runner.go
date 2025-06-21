@@ -19,12 +19,17 @@ func (a *Runner) Defer(fn func() error) {
 	a.defers = append(a.defers, fn)
 }
 
-func NewAppRunner() *Runner {
-	return &Runner{}
+func NewApplicationRunner(components ...Component) *Runner {
+	r := &Runner{}
+	for _, cn := range components {
+		r.Register(cn)
+	}
+	return r
 }
 
-func (a *Runner) Register(c Component) {
+func (a *Runner) Register(c Component) *Runner {
 	a.components = append(a.components, c)
+	return a
 }
 
 func (a *Runner) StartBlocking() error {
