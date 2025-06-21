@@ -9,7 +9,6 @@ import (
 	workerModel "github.com/distributedmarketplace/internal/worker/model"
 	"github.com/distributedmarketplace/pkg/kafka"
 	"log"
-	"sync"
 )
 
 // ErrTaskNotFound is returned when a task with the specified ID doesn't exist
@@ -17,15 +16,16 @@ var ErrTaskNotFound = errors.New("task not found")
 
 // SchedulerServiceImpl implements the SchedulerService interface
 type SchedulerServiceImpl struct {
-	tasks         map[string]*model.Task
-	taskMu        sync.RWMutex
 	workerClient  *grpc.WorkerManagerClient
+	taskClient    *grpc.TaskServiceGrpcClient
 	kafkaProducer *producer.SchedulerProducer
 }
 
 // NewSchedulerServiceImpl creates a new instance of SchedulerServiceImpl
 func NewSchedulerServiceImpl(workerServiceAddr string, pr *kafka.Producer) (*SchedulerServiceImpl, error) {
 	workerClient, err := grpc.NewWorkerManagerClient(workerServiceAddr)
+	taskServiceGrpcClient, err := grpc.NewTaskServiceGrpcClient(workerServiceAddr)
+
 	if err != nil {
 		return nil, err
 	}
@@ -33,8 +33,8 @@ func NewSchedulerServiceImpl(workerServiceAddr string, pr *kafka.Producer) (*Sch
 	kafkaProducer := producer.NewSchedulerProducer(pr)
 
 	return &SchedulerServiceImpl{
-		tasks:         make(map[string]*model.Task),
 		workerClient:  workerClient,
+		taskClient:    taskServiceGrpcClient,
 		kafkaProducer: kafkaProducer,
 	}, nil
 }
@@ -56,7 +56,7 @@ func (s *SchedulerServiceImpl) ScheduleTask(ctx context.Context, taskID string) 
 
 	// In a real implementation, this would:
 	// 1. Get the task details from the task service
-	task, err := s.getTaskFromService(ctx, taskID)
+	task, err := s.taskClient.GetTask(ctx, taskID)
 	if err != nil {
 		return err
 	}
@@ -105,7 +105,7 @@ func (s *SchedulerServiceImpl) ScheduleTask(ctx context.Context, taskID string) 
 
 	// 5. Update the task status to SCHEDULED
 	task.Status = model.StatusScheduled
-	if err := s.updateTaskInService(ctx, task); err != nil {
+	if _, err := s.taskClient.UpdateTask(ctx, task); err != nil {
 		return err
 	}
 
@@ -142,32 +142,5 @@ func (s *SchedulerServiceImpl) AssignTask(ctx context.Context, taskID string, wo
 		return err
 	}
 
-	return nil
-}
-
-//@TODO Move to task client
-
-// GetTaskStatus retrieves the current status of a task
-func (s *SchedulerServiceImpl) GetTaskStatus(ctx context.Context, taskID string) (model.Status, error) {
-	log.Printf("Getting status for task %s", taskID)
-	// In a real implementation, this would:
-	// 1. Get the task details from the task service
-	// 2. Return the task status
-	return model.StatusPending, nil
-}
-
-// Helper function to get a task from a task service
-func (s *SchedulerServiceImpl) getTaskFromService(ctx context.Context, taskID string) (*model.Task, error) {
-	// In a real implementation, this would call the task service via gRPC
-	// For now, return a fake task
-	return &model.Task{
-		ID:     taskID,
-		Status: model.StatusPending,
-	}, nil
-}
-
-// Helper function to update task in task service
-func (s *SchedulerServiceImpl) updateTaskInService(ctx context.Context, task *model.Task) error {
-	// In a real implementation, this would call the task service via gRPC
 	return nil
 }

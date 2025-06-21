@@ -15,7 +15,4 @@ type SchedulerService interface {
 
 	// AssignTask assigns a task or subtask to a specific worker
 	AssignTask(ctx context.Context, taskID string, workerID string) error
-
-	// GetTaskStatus retrieves the current status of a task
-	GetTaskStatus(ctx context.Context, taskID string) (model.Status, error)
 }
