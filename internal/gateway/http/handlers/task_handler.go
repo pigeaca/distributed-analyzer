@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"errors"
@@ -24,8 +24,12 @@ type TaskRequest struct {
 	Description string `json:"description"`
 }
 
+func (h *TaskHandler) Register(rg *gin.RouterGroup) {
+	rg.POST("/tasks", h.SubmitTask)
+}
+
 // SubmitTask handles the creation of a new task
-func (t *TaskHandler) SubmitTask(c *gin.Context) {
+func (h *TaskHandler) SubmitTask(c *gin.Context) {
 	var req TaskRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -42,7 +46,7 @@ func (t *TaskHandler) SubmitTask(c *gin.Context) {
 		UpdatedAt:   time.Now(),
 	}
 
-	createdTask, err := t.taskServiceClient.CreateTask(c.Request.Context(), task)
+	createdTask, err := h.taskServiceClient.CreateTask(c.Request.Context(), task)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to create task: " + err.Error(),
@@ -53,7 +57,7 @@ func (t *TaskHandler) SubmitTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, createdTask)
 }
 
-func (t *TaskHandler) GetTaskStatus(c *gin.Context) {
+func (h *TaskHandler) GetTaskStatus(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -62,7 +66,7 @@ func (t *TaskHandler) GetTaskStatus(c *gin.Context) {
 		return
 	}
 
-	task, err := t.taskServiceClient.GetTask(c.Request.Context(), id)
+	task, err := h.taskServiceClient.GetTask(c.Request.Context(), id)
 	if err != nil {
 		if errors.Is(err, ErrTaskNotFound) {
 			c.JSON(http.StatusNotFound, gin.H{

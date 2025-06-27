@@ -1,5 +1,5 @@
-# DistributedMarketplace
-Distributed AI Task Marketplace
+# Distributed Go Analyze Platform
+A distributed platform for executing and analyzing tasks — for example, building, statically analyzing, and benchmarking Go projects in a scalable way.
 
 ## Architecture Overview
 
@@ -28,19 +28,19 @@ Distributed AI Task Marketplace
 #### Worker Manager
 - Manages worker registration
 - Monitors worker statuses (healthcheck, capacity)
-- Capability matching (e.g., needs resnet50 model, needs GPU)
+- Matches worker capabilities (e.g., needs benchmarking support, or race detection)
 - Exposes gRPC API for worker management
 
 #### Worker Node (agent)
 - Receives tasks via Kafka or gRPC
 - Loads model
-- Executes task in sandbox (Docker / gVisor / Firecracker)
+- Executes task in sandbox (Docker / gVisor)
 - Sends result back via gRPC
 - Exposes gRPC API for task execution
 
 #### Result Aggregator
 - Saves partial results
-- Finalizes result when task is completed
+- Finalizes result when a task is completed
 - Sets Done status
 - Exposes gRPC API for result operations
 
@@ -52,7 +52,7 @@ Distributed AI Task Marketplace
 
 #### Audit & Logging
 - Task tracing, action logging
-- Protection against falsification (optional: hashchain, signatures)
+- Protection against falsification (optional: hash chain, signatures)
 - Exposes gRPC API for audit operations
 
 #### Monitoring / Observability

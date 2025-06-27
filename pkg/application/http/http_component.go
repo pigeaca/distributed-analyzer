@@ -2,39 +2,43 @@ package app
 
 import (
 	"context"
+	"errors"
+	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"time"
 )
 
-type HttpComponent struct {
+type GinHttpComponent struct {
 	server *http.Server
 }
 
-func NewHttpComponent(addr string, handler http.Handler) *HttpComponent {
-	return &HttpComponent{
+func NewGinHttpComponent(addr string, router *gin.Engine) *GinHttpComponent {
+	return &GinHttpComponent{
 		server: &http.Server{
 			Addr:    addr,
-			Handler: handler,
+			Handler: router,
 		},
 	}
 }
 
-func (h *HttpComponent) Start(ctx context.Context) error {
+func (h *GinHttpComponent) Start(ctx context.Context) error {
+	log.Printf("[HTTP] starting Gin server on %s", h.server.Addr)
 	go func() {
-		err := h.server.ListenAndServe()
-		if err != nil {
-			panic(err)
+		if err := h.server.ListenAndServe(); err != nil && !errors.Is(http.ErrServerClosed, err) {
+			log.Fatalf("[HTTP] Gin server error: %v", err)
 		}
 	}()
 	return nil
 }
 
-func (h *HttpComponent) Stop(ctx context.Context) error {
+func (h *GinHttpComponent) Stop(ctx context.Context) error {
+	log.Printf("[HTTP] shutting down Gin server...")
 	ctxTimeout, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	return h.server.Shutdown(ctxTimeout)
 }
 
-func (h *HttpComponent) Name() string {
-	return "HTTP"
+func (h *GinHttpComponent) Name() string {
+	return "GinHTTP"
 }

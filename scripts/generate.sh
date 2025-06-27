@@ -4,7 +4,7 @@
 set -e
 
 # Directory containing proto files
-PROTO_DIR="./proto"
+PROTO_DIR="./api/proto"
 # Directory for generated Go code
 OUTPUT_DIR="./pkg/proto"
 
