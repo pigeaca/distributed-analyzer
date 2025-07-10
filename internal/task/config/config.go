@@ -1,28 +1,48 @@
 package config
 
+import (
+	commonConfig "github.com/distributedmarketplace/internal/common/config"
+)
+
 type Config struct {
-	// Port specifies the HTTP server port
-	// Can be set via PORT environment variable
-	// Default: 8082
-	Port string `envconfig:"PORT" default:"8082"`
+	// Server settings
+	commonConfig.ServerConfig `yaml:",inline"`
 
-	// GrpcPort specifies the gRPC server port
-	// Can be set via GRPC_PORT environment variable
-	// Default: 9082
-	GrpcPort string `envconfig:"GRPC_PORT" default:"9082"`
+	// Kafka settings
+	Kafka KafkaConfig `yaml:"kafka"`
 
-	// Env specifies the environment (development, staging, production)
-	// Can be set via ENV environment variable
-	// Default: development
-	Env string `envconfig:"ENV" default:"development"`
+	// Database settings
+	Database commonConfig.DatabaseConfig `yaml:"database"`
 
-	// KafkaBrokers specifies the Kafka brokers
-	// Can be set via KAFKA_BROKERS environment variable
-	// Default: localhost:9092
-	KafkaBrokers []string `envconfig:"KAFKA_BROKERS" default:"localhost:9092"`
+	// Log settings
+	Log commonConfig.LogConfig `yaml:"log"`
+}
 
-	// KafkaGroupID specifies the Kafka consumer group ID
-	// Can be set via KAFKA_GROUP_ID environment variable
-	// Default: task-service
-	KafkaGroupID string `envconfig:"KAFKA_GROUP_ID" default:"task-service"`
+// KafkaConfig extends the common KafkaConfig with task-specific settings
+type KafkaConfig struct {
+	// Embed the common KafkaConfig
+	commonConfig.KafkaConfig `yaml:",inline"`
+
+	// Override Topics with the task-specific topics
+	Topics KafkaTopicsConfig `yaml:"topics"`
+}
+
+// SetDefaults sets default values for the KafkaConfig
+func (c *KafkaConfig) SetDefaults() {
+	if c.GroupID == "" {
+		c.GroupID = "task-service"
+	}
+}
+
+// KafkaTopicsConfig holds Kafka topics configuration
+type KafkaTopicsConfig struct {
+	// Tasks specifies the tasks topic
+	// Can be set via KAFKA_TOPIC_TASKS environment variable
+	// Default: tasks
+	Tasks string `envconfig:"KAFKA_TOPIC_TASKS" default:"tasks" yaml:"tasks"`
+
+	// Results specifies the results topic
+	// Can be set via KAFKA_TOPIC_RESULTS environment variable
+	// Default: results
+	Results string `envconfig:"KAFKA_TOPIC_RESULTS" default:"results" yaml:"results"`
 }

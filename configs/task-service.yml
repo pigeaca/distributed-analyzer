@@ -1,0 +1,28 @@
+# Task Service Configuration
+
+# Server settings
+port: 8082
+grpc_port: 9082
+env: development
+
+# Kafka settings
+kafka:
+  brokers: localhost:9092
+  group_id: task-service
+  topics:
+    tasks: tasks
+    results: results
+
+# Database settings
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  name: task_service
+  ssl_mode: disable
+
+# Logging
+log:
+  level: info
+  format: json

@@ -1,0 +1,38 @@
+# Result Service Configuration
+
+# Server settings
+port: 8084
+grpc_port: 9084
+env: development
+
+# Kafka settings
+kafka:
+  brokers: localhost:9092
+  group_id: result-service
+  topics:
+    results: results
+    completed: task_completed
+
+# Storage settings
+storage:
+  service_grpc_addr: localhost:9085
+  result_ttl: 30d
+
+# Database settings
+database:
+  host: localhost
+  port: 5432
+  user: postgres
+  password: postgres
+  name: result_service
+  ssl_mode: disable
+
+# Result aggregation
+aggregation:
+  batch_size: 100
+  flush_interval: 5s
+
+# Logging
+log:
+  level: info
+  format: json

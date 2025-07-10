@@ -1,0 +1,44 @@
+# Worker Service Configuration
+
+# Server settings
+port: 8086
+grpc_port: 9086
+env: development
+
+# Kafka settings
+kafka:
+  brokers: localhost:9092
+  group_id: worker
+  topics:
+    assignments: task_assignments
+    results: results
+
+# Service connections
+services:
+  storage:
+    grpc_addr: localhost:9085
+  result:
+    grpc_addr: localhost:9084
+
+# Worker settings
+worker:
+  capabilities:
+    - go_build
+    - go_test
+    - go_lint
+    - go_benchmark
+    - go_race
+  max_concurrent_tasks: 5
+  task_timeout: 300s
+  sandbox:
+    enabled: true
+    type: docker
+    image: golang:1.20-alpine
+    resources:
+      cpu_limit: 1
+      memory_limit: 512MB
+
+# Logging
+log:
+  level: info
+  format: json

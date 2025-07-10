@@ -1,0 +1,51 @@
+# Kafka Configuration
+
+# Broker settings
+brokers:
+  - localhost:9092
+
+# Topic configuration
+topics:
+  tasks:
+    partitions: 3
+    replication_factor: 1
+    retention_hours: 24
+  task_assignments:
+    partitions: 3
+    replication_factor: 1
+    retention_hours: 24
+  results:
+    partitions: 3
+    replication_factor: 1
+    retention_hours: 72
+  task_completed:
+    partitions: 3
+    replication_factor: 1
+    retention_hours: 24
+
+# Consumer group defaults
+consumer_groups:
+  default_session_timeout: 30s
+  default_rebalance_timeout: 60s
+  default_heartbeat_interval: 3s
+
+# Producer settings
+producer:
+  acks: all
+  retries: 3
+  batch_size: 16384
+  linger_ms: 10
+  buffer_memory: 33554432
+
+# Security (commented out for development)
+# security:
+#   sasl:
+#     enabled: false
+#     mechanism: PLAIN
+#     username: kafka
+#     password: kafka-secret
+#   tls:
+#     enabled: false
+#     ca_cert: /etc/kafka/certs/ca.pem
+#     client_cert: /etc/kafka/certs/client.pem
+#     client_key: /etc/kafka/certs/client.key

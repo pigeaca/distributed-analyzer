@@ -1,28 +1,82 @@
 package config
 
+import (
+	commonConfig "github.com/distributedmarketplace/internal/common/config"
+)
+
 type Config struct {
-	// Port specifies the HTTP server port
-	// Can be set via PORT environment variable
-	// Default: 8083
-	Port string `envconfig:"PORT" default:"8083"`
+	// Server settings
+	commonConfig.ServerConfig `yaml:",inline"`
 
-	// GrpcPort specifies the gRPC server port
-	// Can be set via GRPC_PORT environment variable
-	// Default: 9083
-	GrpcPort string `envconfig:"GRPC_PORT" default:"9083"`
+	// Kafka settings
+	Kafka KafkaConfig `yaml:"kafka"`
 
-	// Env specifies the environment (development, staging, production)
-	// Can be set via ENV environment variable
-	// Default: development
-	Env string `envconfig:"ENV" default:"development"`
+	// WorkerManagement settings
+	WorkerManagement WorkerManagementConfig `yaml:"worker_management"`
 
-	// KafkaBrokers specifies the Kafka brokers
-	// Can be set via KAFKA_BROKERS environment variable
-	// Default: localhost:9092
-	KafkaBrokers []string `envconfig:"KAFKA_BROKERS" default:"localhost:9092"`
+	// Scheduling settings
+	Scheduling SchedulingConfig `yaml:"scheduling"`
 
-	// KafkaGroupID specifies the Kafka consumer group ID
-	// Can be set via KAFKA_GROUP_ID environment variable
-	// Default: scheduler-service
-	KafkaGroupID string `envconfig:"KAFKA_GROUP_ID" default:"scheduler-service"`
+	// Log settings
+	Log commonConfig.LogConfig `yaml:"log"`
+}
+
+// KafkaConfig extends the common KafkaConfig with scheduler-specific settings
+type KafkaConfig struct {
+	// Embed the common KafkaConfig
+	commonConfig.KafkaConfig `yaml:",inline"`
+
+	// Override Topics with the scheduler-specific topics
+	Topics KafkaTopicsConfig `yaml:"topics"`
+}
+
+// SetDefaults sets default values for the KafkaConfig
+func (c *KafkaConfig) SetDefaults() {
+	if c.GroupID == "" {
+		c.GroupID = "scheduler-service"
+	}
+}
+
+// KafkaTopicsConfig holds Kafka topics configuration
+type KafkaTopicsConfig struct {
+	// Tasks specifies the tasks topic
+	// Can be set via KAFKA_TOPIC_TASKS environment variable
+	// Default: tasks
+	Tasks string `envconfig:"KAFKA_TOPIC_TASKS" default:"tasks" yaml:"tasks"`
+
+	// Assignments specifies the task assignments topic
+	// Can be set via KAFKA_TOPIC_ASSIGNMENTS environment variable
+	// Default: task_assignments
+	Assignments string `envconfig:"KAFKA_TOPIC_ASSIGNMENTS" default:"task_assignments" yaml:"assignments"`
+}
+
+// WorkerManagementConfig holds worker management configuration
+type WorkerManagementConfig struct {
+	// HeartbeatInterval specifies the worker heartbeat interval
+	// Can be set via WORKER_HEARTBEAT_INTERVAL environment variable
+	// Default: 30s
+	HeartbeatInterval string `envconfig:"WORKER_HEARTBEAT_INTERVAL" default:"30s" yaml:"heartbeat_interval"`
+
+	// Timeout specifies the worker timeout
+	// Can be set via WORKER_TIMEOUT environment variable
+	// Default: 60s
+	Timeout string `envconfig:"WORKER_TIMEOUT" default:"60s" yaml:"timeout"`
+}
+
+// SchedulingConfig holds task scheduling configuration
+type SchedulingConfig struct {
+	// MaxRetries specifies the maximum number of retries for a task
+	// Can be set via SCHEDULING_MAX_RETRIES environment variable
+	// Default: 3
+	MaxRetries int `envconfig:"SCHEDULING_MAX_RETRIES" default:"3" yaml:"max_retries"`
+
+	// RetryDelay specifies the delay between retries
+	// Can be set via SCHEDULING_RETRY_DELAY environment variable
+	// Default: 5s
+	RetryDelay string `envconfig:"SCHEDULING_RETRY_DELAY" default:"5s" yaml:"retry_delay"`
+
+	// DefaultTimeout specifies the default task timeout
+	// Can be set via SCHEDULING_DEFAULT_TIMEOUT environment variable
+	// Default: 300s
+	DefaultTimeout string `envconfig:"SCHEDULING_DEFAULT_TIMEOUT" default:"300s" yaml:"default_timeout"`
 }

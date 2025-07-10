@@ -1,4 +1,17 @@
 # API Gateway Configuration
 
-# HTTP server port
-port: 8081
+# Server settings
+port: 8082
+env: development
+
+# Service connections
+services:
+  task:
+    url: http://localhost:8082
+    grpc_addr: localhost:9082
+  scheduler:
+    url: http://localhost:8083
+    grpc_addr: localhost:9083
+  billing:
+    url: http://localhost:8084
+    grpc_addr: localhost:9084

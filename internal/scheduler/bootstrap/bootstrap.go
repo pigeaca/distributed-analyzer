@@ -2,7 +2,7 @@ package bootstrap
 
 import (
 	"github.com/distributedmarketplace/internal/scheduler/config"
-	handler2 "github.com/distributedmarketplace/internal/scheduler/kafka/handler"
+	"github.com/distributedmarketplace/internal/scheduler/kafka/handler"
 	"github.com/distributedmarketplace/internal/scheduler/service"
 	"github.com/distributedmarketplace/pkg/application"
 	app "github.com/distributedmarketplace/pkg/application/kafka"
@@ -11,7 +11,7 @@ import (
 )
 
 func StartApplication(cfg config.Config) error {
-	producer := kafka.NewProducer(cfg.KafkaBrokers)
+	producer := kafka.NewProducer(cfg.Kafka.Brokers)
 	schedulerService, err := service.NewSchedulerServiceImpl(cfg.GrpcPort, producer)
 	if err != nil {
 		log.Fatalf("failed to create scheduler service: %v", err)
@@ -22,8 +22,8 @@ func StartApplication(cfg config.Config) error {
 }
 
 func initKafka(cfg config.Config, schedulerService service.SchedulerService) *app.KafkaComponent {
-	taskHandler := handler2.NewSchedulerHandler(schedulerService)
+	taskHandler := handler.NewSchedulerHandler(schedulerService)
 	topics := []string{"task-created"}
-	consumer := kafka.NewConsumer(topics, cfg.KafkaBrokers, cfg.KafkaGroupID, taskHandler)
+	consumer := kafka.NewConsumer(topics, cfg.Kafka.Brokers, cfg.Kafka.GroupID, taskHandler)
 	return app.NewKafkaComponent(consumer)
 }

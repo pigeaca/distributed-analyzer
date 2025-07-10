@@ -16,6 +16,7 @@ func StartApplication(cfg config.Config) error {
 
 func initHttp(cfg config.Config) *component.GinHttpComponent {
 	var routes = http.RegisterRoutes(gin.Default())
-	httpComponent := component.NewGinHttpComponent(cfg.BillingServiceGrpcAddr, routes)
+	addr := ":" + cfg.Port
+	httpComponent := component.NewGinHttpComponent(addr, routes)
 	return httpComponent
 }

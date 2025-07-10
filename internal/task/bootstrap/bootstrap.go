@@ -42,9 +42,9 @@ func initGrpc(cfg config.Config, producer *kafka.Producer, service service.TaskS
 }
 
 func initKafka(cfg config.Config, taskService service.TaskService) (*kafka.Producer, *app.KafkaComponent) {
-	producer := kafka.NewProducer(cfg.KafkaBrokers)
+	producer := kafka.NewProducer(cfg.Kafka.Brokers)
 	taskHandler := handler.NewTaskMessageHandler(taskService)
 	topics := []string{"task-status-changed", "task-completed", "task-failed"}
-	consumer := kafka.NewConsumer(topics, cfg.KafkaBrokers, cfg.KafkaGroupID, taskHandler)
+	consumer := kafka.NewConsumer(topics, cfg.Kafka.Brokers, cfg.Kafka.GroupID, taskHandler)
 	return producer, app.NewKafkaComponent(consumer)
 }

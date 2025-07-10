@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	var cfg = configloader.LoadApplicationConfig[config.Config]("api_gateway")
+	var cfg = configloader.LoadApplicationConfig[config.Config]("api-gateway")
 	bootstrap.StartApplication(cfg)
 }

@@ -1,0 +1,30 @@
+# Scheduler Service Configuration
+
+# Server settings
+port: 8083
+grpc_port: 9083
+env: development
+
+# Kafka settings
+kafka:
+  brokers: localhost:9092
+  group_id: scheduler-service
+  topics:
+    tasks: tasks
+    assignments: task_assignments
+
+# Worker management
+worker_management:
+  heartbeat_interval: 30s
+  timeout: 60s
+
+# Task scheduling
+scheduling:
+  max_retries: 3
+  retry_delay: 5s
+  default_timeout: 300s
+
+# Logging
+log:
+  level: info
+  format: json

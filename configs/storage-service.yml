@@ -1,0 +1,39 @@
+# Storage Service Configuration
+
+# Server settings
+port: 8085
+grpc_port: 9085
+env: development
+
+# MinIO (S3) settings
+storage:
+  endpoint: localhost:9000
+  access_key: minioadmin
+  secret_key: minioadmin
+  use_ssl: false
+  bucket: distributed-analyzer
+  region: us-east-1
+
+# File settings
+files:
+  max_size: 100MB
+  allowed_types:
+    - .go
+    - .mod
+    - .sum
+    - .txt
+    - .json
+    - .yaml
+    - .yml
+  temp_dir: /tmp/storage-service
+
+# Cache settings
+cache:
+  enabled: true
+  ttl: 1h
+  max_size: 1GB
+
+# Logging
+log:
+  level: info
+  format: json
