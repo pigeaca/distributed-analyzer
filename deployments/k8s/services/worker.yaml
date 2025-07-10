@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: distributed-analyzer/worker:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/configs/worker
+      volumes:
+      - name: config-volume
+        configMap:
+          name: worker-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  selector:
+    app: worker
+  type: ClusterIP
+  clusterIP: None  # Headless service for worker pods
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: worker-config
+data:
+  config.yaml: |
+    kafka:
+      brokers:
+        - kafka:9092
+      consumer:
+        group_id: worker-group
+        topics:
+          - tasks

@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-service
+  labels:
+    app: task-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: task-service
+  template:
+    metadata:
+      labels:
+        app: task-service
+    spec:
+      containers:
+      - name: task-service
+        image: distributed-analyzer/task-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        - containerPort: 9000  # gRPC port
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/configs/task-service
+      volumes:
+      - name: config-volume
+        configMap:
+          name: task-service-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-service
+  labels:
+    app: task-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  - port: 9000
+    targetPort: 9000
+    name: grpc
+  selector:
+    app: task-service
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-service-config
+data:
+  config.yaml: |
+    kafka:
+      brokers:
+        - kafka:9092
+    grpc:
+      port: 9000
+    server:
+      port: 8080

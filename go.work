@@ -1,0 +1,17 @@
+go 1.24
+
+use (
+	./libs/application
+	./libs/common
+	./libs/config
+	./libs/kafka
+	./libs/model
+	./libs/proto
+	./services/api-gateway
+	./services/cli
+	./services/result-service
+	./services/scheduler-service
+	./services/storage-service
+	./services/task-service
+	./services/worker
+)

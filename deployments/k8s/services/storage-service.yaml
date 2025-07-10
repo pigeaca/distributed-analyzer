@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-service
+  labels:
+    app: storage-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: storage-service
+  template:
+    metadata:
+      labels:
+        app: storage-service
+    spec:
+      containers:
+      - name: storage-service
+        image: distributed-analyzer/storage-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KAFKA_BROKERS
+          value: "kafka:9092"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/configs/storage-service
+        - name: storage-data
+          mountPath: /app/data
+      volumes:
+      - name: config-volume
+        configMap:
+          name: storage-service-config
+      - name: storage-data
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-service
+  labels:
+    app: storage-service
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: storage-service
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storage-service-config
+data:
+  config.yaml: |
+    kafka:
+      brokers:
+        - kafka:9092
+    server:
+      port: 8080
+    storage:
+      path: /app/data
