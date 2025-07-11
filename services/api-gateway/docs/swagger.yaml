@@ -1,0 +1,228 @@
+basePath: /api
+definitions:
+  handlers.TaskRequest:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  handlers.TaskResponse:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      input:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      output:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  handlers.UpdateTaskRequest:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      input:
+        additionalProperties:
+          type: string
+        type: object
+      name:
+        type: string
+      output:
+        additionalProperties:
+          type: string
+        type: object
+      status:
+        type: string
+    required:
+    - id
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the API Gateway for the Distributed Marketplace system.
+  title: Distributed Marketplace API
+  version: "1.0"
+paths:
+  /api/task/delete/{id}:
+    delete:
+      description: Deletes a task from the system
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a task
+      tags:
+      - tasks
+  /api/task/list:
+    get:
+      description: Retrieves a list of all tasks in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of tasks
+          schema:
+            items:
+              $ref: '#/definitions/handlers.TaskResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: List all tasks
+      tags:
+      - tasks
+  /api/task/status/{id}:
+    get:
+      description: Retrieves the status of a task by its ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task details
+          schema:
+            $ref: '#/definitions/handlers.TaskResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Task not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get task status
+      tags:
+      - tasks
+  /api/task/submit:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new task in the system
+      parameters:
+      - description: Task information
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.TaskRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Task created successfully
+          schema:
+            $ref: '#/definitions/handlers.TaskResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Submit a new task
+      tags:
+      - tasks
+  /api/task/update:
+    put:
+      consumes:
+      - application/json
+      description: Updates an existing task in the system
+      parameters:
+      - description: Updated task information
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Task updated successfully
+          schema:
+            $ref: '#/definitions/handlers.TaskResponse'
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Task not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update a task
+      tags:
+      - tasks
+swagger: "2.0"

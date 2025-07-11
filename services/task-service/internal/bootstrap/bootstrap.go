@@ -23,7 +23,7 @@ func StartApplication(cfg config.Config) error {
 	producer, kafkaComponent := initKafka(cfg, taskService)
 	_, grpcComponent := initGrpc(cfg, producer, taskService)
 	runner := application.NewApplicationRunner(grpcComponent, kafkaComponent)
-	return runner.StartBlocking()
+	return runner.Start()
 }
 
 func initGrpc(cfg config.Config, producer *kafka.Producer, service service.TaskService) (*stdgrpc.Server, *app2.GrpcComponent) {

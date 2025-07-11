@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"context"
-	clientService "github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/service"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
 	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
+	clientService "github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/service"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/timestamppb"

@@ -32,9 +32,11 @@ func (a *Runner) Register(c Component) *Runner {
 	return a
 }
 
-func (a *Runner) StartBlocking() error {
+func (a *Runner) Start() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	a.cancel = cancel
+
+	defer a.StopAll(context.Background())
 
 	sigCh := make(chan os.Signal, 1)
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
@@ -50,7 +52,6 @@ func (a *Runner) StartBlocking() error {
 
 	<-sigCh
 	log.Println("Shutdown signal received. Stopping components...")
-	a.StopAll(context.Background())
 	return nil
 }
 
