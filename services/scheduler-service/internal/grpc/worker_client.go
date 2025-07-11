@@ -3,17 +3,16 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"github.com/distributedmarketplace/internal/worker/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	pbW "github.com/pigeaca/DistributedMarketplace/libs/proto/worker"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
-
-	pb "github.com/distributedmarketplace/pkg/proto/worker"
 )
 
 // WorkerManagerClient is a gRPC client for the WorkerManager service
 type WorkerManagerClient struct {
-	client pb.WorkerManagerServiceClient
+	client pbW.WorkerManagerServiceClient
 	conn   *grpc.ClientConn
 }
 
@@ -24,7 +23,7 @@ func NewWorkerManagerClient(address string) (*WorkerManagerClient, error) {
 		return nil, fmt.Errorf("failed to connect to WorkerManager service: %w", err)
 	}
 
-	client := pb.NewWorkerManagerServiceClient(conn)
+	client := pbW.NewWorkerManagerServiceClient(conn)
 	return &WorkerManagerClient{
 		client: client,
 		conn:   conn,
@@ -39,24 +38,24 @@ func (c *WorkerManagerClient) Close() error {
 // FindAvailableWorkers finds workers that can handle a specific task
 func (c *WorkerManagerClient) FindAvailableWorkers(ctx context.Context, capabilities []model.Capability, resources []model.Resource) ([]*model.Worker, error) {
 	// Convert model.Capability to pb.Capability
-	pbCapabilities := make([]*pb.Capability, len(capabilities))
+	pbCapabilities := make([]*pbW.Capability, len(capabilities))
 	for i, capability := range capabilities {
-		pbCapabilities[i] = &pb.Capability{
+		pbCapabilities[i] = &pbW.Capability{
 			Name:  capability.Name,
 			Value: capability.Value,
 		}
 	}
 
 	// Convert model.Resource to pb.Resource
-	pbResources := make([]*pb.Resource, len(resources))
+	pbResources := make([]*pbW.Resource, len(resources))
 	for i, resource := range resources {
-		pbResources[i] = &pb.Resource{
+		pbResources[i] = &pbW.Resource{
 			Type:  resource.Type,
 			Value: int32(resource.Value),
 		}
 	}
 
-	req := &pb.FindAvailableWorkersRequest{
+	req := &pbW.FindAvailableWorkersRequest{
 		Capabilities: pbCapabilities,
 		Resources:    pbResources,
 	}
@@ -102,7 +101,7 @@ func (c *WorkerManagerClient) FindAvailableWorkers(ctx context.Context, capabili
 
 // GetWorker retrieves a worker by its ID
 func (c *WorkerManagerClient) GetWorker(ctx context.Context, id string) (*model.Worker, error) {
-	req := &pb.GetWorkerRequest{
+	req := &pbW.GetWorkerRequest{
 		Id: id,
 	}
 

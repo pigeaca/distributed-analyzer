@@ -36,12 +36,12 @@ func (c *KafkaConfig) SetDefaults() {
 
 // KafkaTopicsConfig holds Kafka topics configuration
 type KafkaTopicsConfig struct {
-	// Tasks specifies the tasks topic
+	// Tasks specifies the task topic
 	// Can be set via KAFKA_TOPIC_TASKS environment variable
 	// Default: tasks
 	Tasks string `envconfig:"KAFKA_TOPIC_TASKS" default:"tasks" yaml:"tasks"`
 
-	// Results specifies the results topic
+	// Results specify the result topic
 	// Can be set via KAFKA_TOPIC_RESULTS environment variable
 	// Default: results
 	Results string `envconfig:"KAFKA_TOPIC_RESULTS" default:"results" yaml:"results"`

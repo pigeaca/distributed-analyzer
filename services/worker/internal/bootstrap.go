@@ -1,11 +1,11 @@
 package bootstrap
 
 import (
-	"github.com/distributedmarketplace/internal/worker/config"
-	app "github.com/distributedmarketplace/pkg/application"
+	app "github.com/pigeaca/DistributedMarketplace/libs/application"
+	"github.com/pigeaca/DistributedMarketplace/services/worker/internal/config"
 )
 
-func StartApplication(cfg config.Config) error {
+func StartApplication(cfg *config.Config) error {
 	runner := app.NewApplicationRunner()
-	return runner.StartBlocking()
+	return runner.Start()
 }

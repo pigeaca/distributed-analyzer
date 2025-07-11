@@ -19,7 +19,7 @@ type ServerConfig struct {
 
 // DatabaseConfig holds database-related configuration
 type DatabaseConfig struct {
-	// Host specifies the database host
+	// Host specifying the database host
 	// Can be set via DB_HOST environment variable
 	// Default: localhost
 	Host string `envconfig:"DB_HOST" default:"localhost" yaml:"host"`
@@ -56,7 +56,7 @@ type LogConfig struct {
 	// Default: info
 	Level string `envconfig:"LOG_LEVEL" default:"info" yaml:"level"`
 
-	// Format specifies the log format
+	// Format specifying the log format
 	// Can be set via LOG_FORMAT environment variable
 	// Default: json
 	Format string `envconfig:"LOG_FORMAT" default:"json" yaml:"format"`
@@ -64,6 +64,7 @@ type LogConfig struct {
 
 // KafkaConfig holds Kafka-related configuration
 type KafkaConfig struct {
+	Topics []string `envconfig:"KAFKA_TOPICS" yaml:"topics"`
 	// Brokers specifies the Kafka brokers
 	// Can be set via KAFKA_BROKERS environment variable
 	// Default: localhost:9092

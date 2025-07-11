@@ -3,11 +3,10 @@ package kafka
 import (
 	"context"
 	"encoding/json"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
 	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"
-
-	pb "github.com/distributedmarketplace/pkg/proto/kafka"
 )
 
 // WorkerProducer is a Kafka producer for worker events

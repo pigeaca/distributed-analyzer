@@ -3,11 +3,10 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/distributedmarketplace/internal/scheduler/grpc"
-	"github.com/distributedmarketplace/internal/scheduler/kafka/producer"
-	"github.com/distributedmarketplace/internal/task/model"
-	workerModel "github.com/distributedmarketplace/internal/worker/model"
-	"github.com/distributedmarketplace/pkg/kafka"
+	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/grpc"
+	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/kafka/producer"
 	"log"
 )
 
@@ -62,10 +61,10 @@ func (s *SchedulerServiceImpl) ScheduleTask(ctx context.Context, taskID string) 
 	}
 
 	// 2. Find available workers using the worker manager
-	capabilities := []workerModel.Capability{
+	capabilities := []model.Capability{
 		{Name: "default", Value: "1.0"},
 	}
-	resources := []workerModel.Resource{
+	resources := []model.Resource{
 		{Type: "CPU", Value: 1},
 	}
 

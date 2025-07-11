@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/distributedmarketplace/internal/scheduler/service"
-	pb "github.com/distributedmarketplace/pkg/proto/kafka"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
+	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/service"
 	"github.com/segmentio/kafka-go"
 	"log"
 )

@@ -3,14 +3,14 @@ package bootstrap
 import (
 	"fmt"
 	"github.com/pigeaca/DistributedMarketplace/libs/application"
-	app2 "github.com/pigeaca/DistributedMarketplace/libs/application/grpc"
-	app "github.com/pigeaca/DistributedMarketplace/libs/application/kafka"
+	grpcApp "github.com/pigeaca/DistributedMarketplace/libs/application/grpc"
+	kafkaApp "github.com/pigeaca/DistributedMarketplace/libs/application/kafka"
 	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
 	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
 	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/config"
 	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/grpc"
 	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/kafka/handler"
-	producer2 "github.com/pigeaca/DistributedMarketplace/services/task-service/internal/kafka/producer"
+	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/kafka/producer"
 	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/service"
 	stdgrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,17 +18,17 @@ import (
 	"net"
 )
 
-func StartApplication(cfg config.Config) error {
+func StartApplication(cfg *config.Config) error {
 	taskService := service.NewTaskServiceImpl()
-	producer, kafkaComponent := initKafka(cfg, taskService)
-	_, grpcComponent := initGrpc(cfg, producer, taskService)
+	kafkaProducer, kafkaComponent := initKafka(cfg, taskService)
+	_, grpcComponent := initGrpc(cfg, kafkaProducer, taskService)
 	runner := application.NewApplicationRunner(grpcComponent, kafkaComponent)
 	return runner.Start()
 }
 
-func initGrpc(cfg config.Config, producer *kafka.Producer, service service.TaskService) (*stdgrpc.Server, *app2.GrpcComponent) {
+func initGrpc(cfg *config.Config, kafkaProducer *kafka.Producer, service service.TaskService) (*stdgrpc.Server, *grpcApp.GrpcComponent) {
 	grpcServer := stdgrpc.NewServer()
-	taskProducer := producer2.NewTaskProducer(producer)
+	taskProducer := producer.NewTaskProducer(kafkaProducer)
 	taskGrpcServer := grpc.NewTaskServer(service, taskProducer)
 	pb.RegisterTaskServiceServer(grpcServer, taskGrpcServer)
 	reflection.Register(grpcServer)
@@ -38,13 +38,13 @@ func initGrpc(cfg config.Config, producer *kafka.Producer, service service.TaskS
 	if err != nil {
 		log.Fatalf("failed to listen on %s: %v", grpcAddr, err)
 	}
-	return grpcServer, app2.NewGrpcComponent(grpcServer, listener)
+	return grpcServer, grpcApp.NewGrpcComponent(grpcServer, listener)
 }
 
-func initKafka(cfg config.Config, taskService service.TaskService) (*kafka.Producer, *app.KafkaComponent) {
-	producer := kafka.NewProducer(cfg.Kafka.Brokers)
+func initKafka(cfg *config.Config, taskService service.TaskService) (*kafka.Producer, *kafkaApp.KafkaComponent) {
+	kafkaProducer := kafka.NewProducer(cfg.Kafka.Brokers)
 	taskHandler := handler.NewTaskMessageHandler(taskService)
 	topics := []string{"task-status-changed", "task-completed", "task-failed"}
 	consumer := kafka.NewConsumer(topics, cfg.Kafka.Brokers, cfg.Kafka.GroupID, taskHandler)
-	return producer, app.NewKafkaComponent(consumer)
+	return kafkaProducer, kafkaApp.NewKafkaComponent(consumer)
 }

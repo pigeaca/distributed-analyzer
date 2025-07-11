@@ -1,12 +1,12 @@
 package main
 
 import (
-	bootstrap "github.com/distributedmarketplace/internal/worker"
-	"github.com/distributedmarketplace/internal/worker/config"
-	configloader "github.com/distributedmarketplace/pkg/config"
+	configloader "github.com/pigeaca/DistributedMarketplace/libs/config"
+	bootstrap "github.com/pigeaca/DistributedMarketplace/services/worker/internal"
+	"github.com/pigeaca/DistributedMarketplace/services/worker/internal/config"
 )
 
 func main() {
 	var cfg = configloader.LoadApplicationConfig[config.Config]("worker")
-	bootstrap.StartApplication(cfg)
+	bootstrap.StartApplication(&cfg)
 }

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/distributedmarketplace/internal/worker/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
 )
 
 // WorkerManagerService defines the interface for worker management operations

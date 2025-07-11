@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	var cfg = configloader.LoadApplicationConfig[config.Config]("task_service")
-	bootstrap.StartApplication(cfg)
+	var cfg = configloader.LoadApplicationConfig[config.Config]("task-service")
+	bootstrap.StartApplication(&cfg)
 }

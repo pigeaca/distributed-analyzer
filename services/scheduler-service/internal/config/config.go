@@ -1,30 +1,25 @@
 package config
 
-import (
-	commonConfig "github.com/distributedmarketplace/internal/common/config"
-)
+import "github.com/pigeaca/DistributedMarketplace/libs/common/config"
 
 type Config struct {
 	// Server settings
-	commonConfig.ServerConfig `yaml:",inline"`
+	config.ServerConfig `yaml:",inline"`
 
 	// Kafka settings
 	Kafka KafkaConfig `yaml:"kafka"`
-
-	// WorkerManagement settings
-	WorkerManagement WorkerManagementConfig `yaml:"worker_management"`
 
 	// Scheduling settings
 	Scheduling SchedulingConfig `yaml:"scheduling"`
 
 	// Log settings
-	Log commonConfig.LogConfig `yaml:"log"`
+	Log config.LogConfig `yaml:"log"`
 }
 
 // KafkaConfig extends the common KafkaConfig with scheduler-specific settings
 type KafkaConfig struct {
 	// Embed the common KafkaConfig
-	commonConfig.KafkaConfig `yaml:",inline"`
+	config.KafkaConfig `yaml:",inline"`
 
 	// Override Topics with the scheduler-specific topics
 	Topics KafkaTopicsConfig `yaml:"topics"`
@@ -39,28 +34,15 @@ func (c *KafkaConfig) SetDefaults() {
 
 // KafkaTopicsConfig holds Kafka topics configuration
 type KafkaTopicsConfig struct {
-	// Tasks specifies the tasks topic
+	// Tasks specifies the task topic
 	// Can be set via KAFKA_TOPIC_TASKS environment variable
 	// Default: tasks
 	Tasks string `envconfig:"KAFKA_TOPIC_TASKS" default:"tasks" yaml:"tasks"`
 
-	// Assignments specifies the task assignments topic
+	// Assignments specify the task assignments topic
 	// Can be set via KAFKA_TOPIC_ASSIGNMENTS environment variable
 	// Default: task_assignments
 	Assignments string `envconfig:"KAFKA_TOPIC_ASSIGNMENTS" default:"task_assignments" yaml:"assignments"`
-}
-
-// WorkerManagementConfig holds worker management configuration
-type WorkerManagementConfig struct {
-	// HeartbeatInterval specifies the worker heartbeat interval
-	// Can be set via WORKER_HEARTBEAT_INTERVAL environment variable
-	// Default: 30s
-	HeartbeatInterval string `envconfig:"WORKER_HEARTBEAT_INTERVAL" default:"30s" yaml:"heartbeat_interval"`
-
-	// Timeout specifies the worker timeout
-	// Can be set via WORKER_TIMEOUT environment variable
-	// Default: 60s
-	Timeout string `envconfig:"WORKER_TIMEOUT" default:"60s" yaml:"timeout"`
 }
 
 // SchedulingConfig holds task scheduling configuration

@@ -1,12 +1,12 @@
 package config
 
 import (
-	commonConfig "github.com/distributedmarketplace/internal/common/config"
+	"github.com/pigeaca/DistributedMarketplace/libs/common/config"
 )
 
 type Config struct {
 	// Server settings
-	commonConfig.ServerConfig `yaml:",inline"`
+	config.ServerConfig `yaml:",inline"`
 
 	// Kafka settings
 	Kafka KafkaConfig `yaml:"kafka"`
@@ -18,13 +18,13 @@ type Config struct {
 	Worker WorkerConfig `yaml:"worker"`
 
 	// Log settings
-	Log commonConfig.LogConfig `yaml:"log"`
+	Log config.LogConfig `yaml:"log"`
 }
 
 // KafkaConfig extends the common KafkaConfig with worker-specific settings
 type KafkaConfig struct {
 	// Embed the common KafkaConfig
-	commonConfig.KafkaConfig `yaml:",inline"`
+	config.KafkaConfig `yaml:",inline"`
 
 	// Override Topics with the worker-specific topics
 	Topics KafkaTopicsConfig `yaml:"topics"`
@@ -46,17 +46,17 @@ type KafkaTopicsConfig struct {
 // ServicesConfig holds service connection configuration
 type ServicesConfig struct {
 	// Storage service configuration
-	Storage commonConfig.ServiceConnectionConfig `yaml:"storage"`
+	Storage config.ServiceConnectionConfig `yaml:"storage"`
 
 	// Result service configuration
-	Result commonConfig.ServiceConnectionConfig `yaml:"result"`
+	Result config.ServiceConnectionConfig `yaml:"result"`
 }
 
 // WorkerConfig holds worker-specific configuration
 type WorkerConfig struct {
 	// Capabilities specifies the worker capabilities
 	// Can be set via WORKER_CAPABILITIES environment variable
-	// Default: go_build,go_test,go_lint,go_benchmark,go_race
+	// Default: go_build,go_test,go_lint, go_benchmark, go_race
 	Capabilities []string `envconfig:"WORKER_CAPABILITIES" default:"go_build,go_test,go_lint,go_benchmark,go_race" yaml:"capabilities"`
 
 	// MaxConcurrentTasks specifies the maximum number of concurrent tasks
@@ -90,7 +90,7 @@ type SandboxConfig struct {
 	// Default: golang:1.20-alpine
 	Image string `envconfig:"SANDBOX_IMAGE" default:"golang:1.20-alpine" yaml:"image"`
 
-	// Resources specifies the sandbox resource limits
+	// Resources specify the sandbox resource limits
 	Resources ResourcesConfig `yaml:"resources"`
 }
 

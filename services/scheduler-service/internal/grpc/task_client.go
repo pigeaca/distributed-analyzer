@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"context"
-	"github.com/distributedmarketplace/internal/task/model"
-	pb "github.com/distributedmarketplace/pkg/proto/task"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/timestamppb"

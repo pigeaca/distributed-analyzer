@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/distributedmarketplace/internal/task/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
 )
 
 // SchedulerService defines the interface for task scheduling operations

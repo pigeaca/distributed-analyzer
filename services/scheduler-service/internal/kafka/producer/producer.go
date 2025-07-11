@@ -2,8 +2,8 @@ package producer
 
 import (
 	"context"
-	"github.com/distributedmarketplace/pkg/kafka"
-	pb "github.com/distributedmarketplace/pkg/proto/kafka"
+	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"
 )

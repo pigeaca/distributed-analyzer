@@ -1,7 +1,7 @@
 package bootstrap
 
-import "github.com/distributedmarketplace/internal/result/config"
+import "github.com/pigeaca/DistributedMarketplace/services/result-service/internal/config"
 
-func StartApplication(config.Config) {
+func StartApplication(cfg *config.Config) {
 
 }

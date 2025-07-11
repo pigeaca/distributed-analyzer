@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/distributedmarketplace/internal/task/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
 	"io"
 	"net/http"
 	"strings"
