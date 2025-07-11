@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"github.com/distributedmarketplace/internal/task/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
 	"sync"
 	"time"
 )

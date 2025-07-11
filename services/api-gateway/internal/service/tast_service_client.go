@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/model"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
 )
 
 type TaskServiceClient interface {

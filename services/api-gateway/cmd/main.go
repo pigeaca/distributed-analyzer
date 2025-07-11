@@ -2,9 +2,8 @@ package main
 
 import (
 	configloader "github.com/pigeaca/DistributedMarketplace/libs/config"
-	"github.com/p
 	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/bootstrap"
-	configloader "github.com/pigeaca/DistributedMarketplace/libs/config"
+	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/config"
 )
 
 func main() {

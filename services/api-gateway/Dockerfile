@@ -1,9 +1,8 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
 # Copy go.mod and go.sum files
-COPY go.work go.work.sum ./
 COPY services/api-gateway/go.mod services/api-gateway/go.sum ./services/api-gateway/
 COPY libs ./libs/
 
@@ -28,10 +27,10 @@ WORKDIR /app
 COPY --from=builder /app/services/api-gateway/api-gateway .
 
 # Copy any necessary configuration files
-COPY configs/api-gateway ./configs/api-gateway/
+COPY configs/api-gateway.yml ./configs/api-gateway.yml
 
 # Expose the port the service runs on
-EXPOSE 8080
+EXPOSE 8082
 
 # Run the application
 CMD ["./api-gateway"]

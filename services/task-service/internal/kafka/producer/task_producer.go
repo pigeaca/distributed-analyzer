@@ -2,10 +2,10 @@ package producer
 
 import (
 	"context"
-	"github.com/distributedmarketplace/internal/task/model"
-	"github.com/distributedmarketplace/pkg/kafka"
-	pb "github.com/distributedmarketplace/pkg/proto/kafka"
-	taskpb "github.com/distributedmarketplace/pkg/proto/task"
+	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
+	taskpb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"
 )

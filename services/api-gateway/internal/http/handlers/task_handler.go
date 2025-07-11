@@ -2,9 +2,9 @@ package handlers
 
 import (
 	"errors"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/service"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/model"
 	"github.com/gin-gonic/gin"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/service"
 	"net/http"
 	"time"
 )

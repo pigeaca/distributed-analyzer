@@ -4,16 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/distributedmarketplace/internal/task/model"
-	"github.com/distributedmarketplace/internal/task/service"
-	kf "github.com/distributedmarketplace/pkg/kafka"
-	pb "github.com/distributedmarketplace/pkg/proto/kafka"
-	taskpb "github.com/distributedmarketplace/pkg/proto/task"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
+	taskpb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
+	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/service"
 	"github.com/segmentio/kafka-go"
 	"time"
 )
-
-var _ kf.MessageHandler = (*TaskMessageHandler)(nil)
 
 type TaskMessageHandler struct {
 	taskService service.TaskService

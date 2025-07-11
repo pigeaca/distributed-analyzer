@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/distributedmarketplace/internal/task/bootstrap"
-	"github.com/distributedmarketplace/internal/task/config"
-	configloader "github.com/distributedmarketplace/pkg/config"
+	configloader "github.com/pigeaca/DistributedMarketplace/libs/config"
+	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/bootstrap"
+	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/config"
 )
 
 func main() {

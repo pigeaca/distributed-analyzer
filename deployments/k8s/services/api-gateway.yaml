@@ -19,7 +19,7 @@ spec:
         image: distributed-analyzer/api-gateway:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - containerPort: 8082
         env:
         - name: KAFKA_BROKERS
           value: "kafka:9092"
@@ -47,7 +47,7 @@ metadata:
 spec:
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 8082
     name: http
   selector:
     app: api-gateway
@@ -63,4 +63,4 @@ data:
       brokers:
         - kafka:9092
     server:
-      port: 8080
+      port: 8082

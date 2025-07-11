@@ -1,9 +1,8 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
 
 # Copy go.mod and go.sum files
-COPY go.work go.work.sum ./
 COPY services/task-service/go.mod services/task-service/go.sum ./services/task-service/
 COPY libs ./libs/
 
@@ -31,7 +30,7 @@ COPY --from=builder /app/services/task-service/task-service .
 COPY configs/task-service ./configs/task-service/
 
 # Expose the port the service runs on
-EXPOSE 8080
+EXPOSE 8082
 
 # Run the application
 CMD ["./task-service"]

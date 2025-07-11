@@ -9,7 +9,7 @@ type Config struct {
 	Port string `koanf:"port" default:"8081" yaml:"port"`
 	Env  string `koanf:"env" default:"development" yaml:"env"`
 
-	// Services holds the configuration for all services
+	// Services hold the configuration for all services
 	Services struct {
 		// Task service configuration
 		// Default Url: http://localhost:8082

@@ -6,7 +6,7 @@ set -e
 # Directory containing proto files
 PROTO_DIR="./api/proto"
 # Directory for generated Go code
-OUTPUT_DIR="./pkg/proto"
+OUTPUT_DIR="../libs/proto"
 
 # Create output directory if it doesn't exist
 mkdir -p $OUTPUT_DIR
@@ -27,49 +27,49 @@ echo "Generating Go code from proto files..."
 
 # Task service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/task/task.proto
 
 # Scheduler service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/scheduler/scheduler.proto
 
 # Worker service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/worker/worker.proto
 
 # Result service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/result/result.proto
 
 # Billing service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/billing/billing.proto
 
 # Audit service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/audit/audit.proto
 
 # User service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/user/user.proto
 
 # Kafka messages
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/distributedmarketplace \
+    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
     $PROTO_DIR/kafka/messages.proto
 
 echo "Code generation complete!"

@@ -2,10 +2,10 @@ package grpc
 
 import (
 	"context"
-	"github.com/distributedmarketplace/internal/task/kafka/producer"
-	"github.com/distributedmarketplace/internal/task/model"
-	"github.com/distributedmarketplace/internal/task/service"
-	pb "github.com/distributedmarketplace/pkg/proto/task"
+	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
+	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/kafka/producer"
+	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/service"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"

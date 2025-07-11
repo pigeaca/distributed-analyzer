@@ -1,7 +1,7 @@
 # API Gateway Configuration
 
 # Server settings
-port: 8082
+port: 8080
 env: development
 
 # Service connections
