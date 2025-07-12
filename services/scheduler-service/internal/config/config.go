@@ -1,64 +1,32 @@
 package config
 
 import (
-	"distributed-analyzer/libs/config"
+	configloader "distributed-analyzer/libs/config"
 )
 
 type Config struct {
-	// Server settings
 	configloader.ServerConfig `yaml:",inline"`
 
-	// Kafka settings
-	Kafka KafkaConfig `yaml:"kafka"`
-
-	// Scheduling settings
-	Scheduling SchedulingConfig `yaml:"scheduling"`
-
-	// Log settings
-	Log configloader.LogConfig `yaml:"log"`
-
-	// ShutdownTimeout specifies how long to wait for graceful shutdown
-	// Can be set via SHUTDOWN_TIMEOUT environment variable
-	// Default: 30s
-	ShutdownTimeout string `envconfig:"SHUTDOWN_TIMEOUT" default:"30s" yaml:"shutdown_timeout"`
+	Kafka           KafkaConfig            `yaml:"kafka"`
+	Scheduling      SchedulingConfig       `yaml:"scheduling"`
+	Log             configloader.LogConfig `yaml:"log"`
+	ShutdownTimeout string                 `yaml:"shutdown_timeout" env:"SHUTDOWN_TIMEOUT" env-default:"30s"`
 }
 
-// KafkaConfig extends the common KafkaConfig with scheduler-specific settings
+// KafkaConfig extends the common KafkaConfig with scheduler-specific topics
 type KafkaConfig struct {
-	// Embed the common KafkaConfig
 	configloader.KafkaConfig `yaml:",inline"`
 
-	// Override Topics with the scheduler-specific topics
 	Topics KafkaTopicsConfig `yaml:"topics"`
 }
 
-// KafkaTopicsConfig holds Kafka topics configuration
 type KafkaTopicsConfig struct {
-	// Tasks specifies the task topic
-	// Can be set via KAFKA_TOPIC_TASKS environment variable
-	// Default: tasks
-	Tasks string `envconfig:"KAFKA_TOPIC_TASKS" default:"tasks" yaml:"tasks"`
-
-	// Assignments specify the task assignments topic
-	// Can be set via KAFKA_TOPIC_ASSIGNMENTS environment variable
-	// Default: task_assignments
-	Assignments string `envconfig:"KAFKA_TOPIC_ASSIGNMENTS" default:"task_assignments" yaml:"assignments"`
+	Tasks       string `yaml:"tasks"       env:"KAFKA_TOPIC_TASKS"       env-default:"tasks"`
+	Assignments string `yaml:"assignments" env:"KAFKA_TOPIC_ASSIGNMENTS" env-default:"task_assignments"`
 }
 
-// SchedulingConfig holds task scheduling configuration
 type SchedulingConfig struct {
-	// MaxRetries specifies the maximum number of retries for a task
-	// Can be set via SCHEDULING_MAX_RETRIES environment variable
-	// Default: 3
-	MaxRetries int `envconfig:"SCHEDULING_MAX_RETRIES" default:"3" yaml:"max_retries"`
-
-	// RetryDelay specifies the delay between retries
-	// Can be set via SCHEDULING_RETRY_DELAY environment variable
-	// Default: 5s
-	RetryDelay string `envconfig:"SCHEDULING_RETRY_DELAY" default:"5s" yaml:"retry_delay"`
-
-	// DefaultTimeout specifies the default task timeout
-	// Can be set via SCHEDULING_DEFAULT_TIMEOUT environment variable
-	// Default: 300s
-	DefaultTimeout string `envconfig:"SCHEDULING_DEFAULT_TIMEOUT" default:"300s" yaml:"default_timeout"`
+	MaxRetries     int    `yaml:"max_retries"      env:"SCHEDULING_MAX_RETRIES"      env-default:"3"`
+	RetryDelay     string `yaml:"retry_delay"      env:"SCHEDULING_RETRY_DELAY"      env-default:"5s"`
+	DefaultTimeout string `yaml:"default_timeout"  env:"SCHEDULING_DEFAULT_TIMEOUT"  env-default:"300s"`
 }

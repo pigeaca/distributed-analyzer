@@ -2,7 +2,7 @@ package component
 
 import (
 	"context"
-	"distrib
+	configloader "distributed-analyzer/libs/config"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -14,7 +14,7 @@ type GinHttpComponent struct {
 	server *http.Server
 }
 
-func NewGinHttpComponent(cfg *config.ServerConfig, router *gin.Engine) *GinHttpComponent {
+func NewGinHttpComponent(cfg *configloader.ServerConfig, router *gin.Engine) *GinHttpComponent {
 	addr := ":" + cfg.Port
 	return &GinHttpComponent{
 		server: &http.Server{

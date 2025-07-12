@@ -1,0 +1,16 @@
+# Scheduler Service Configuration
+
+# Server settings
+port: 8086
+grpc_port: 9086
+env: development
+
+# Worker management
+worker_management:
+  heartbeat_interval: 30s
+  timeout: 60s
+
+# Logging
+log:
+  level: info
+  format: json

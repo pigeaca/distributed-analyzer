@@ -1,28 +1,24 @@
 package config
 
-import (
-	"distributed-analyzer/libs/config"
-)
-
-// Config holds the API gateway configuration
 type Config struct {
-	ServerConfig configloader.ServerConfig `koanf:"server" yaml:"server"`
+	ServerConfig ServerConfig `yaml:"server"`
 
-	// Services hold the configuration for all services
-	Services struct {
-		// Task service configuration
-		// Default Url: http://localhost:8082
-		// Default GrpcAddr: localhost:9082
-		Task configloader.ServiceConnectionConfig `koanf:"task" yaml:"task"`
+	Services ServicesConfig `yaml:"services"`
+}
 
-		// Scheduler service configuration
-		// Default Url: http://localhost:8083
-		// Default GrpcAddr: localhost:9083
-		Scheduler configloader.ServiceConnectionConfig `koanf:"scheduler" yaml:"scheduler"`
+type ServerConfig struct {
+	Port     int    `yaml:"port"      env:"SERVER_PORT"      env-default:"8080"`
+	GRPCPort int    `yaml:"grpc_port" env:"SERVER_GRPC_PORT" env-default:"9090"`
+	Env      string `yaml:"env"       env:"ENV"              env-default:"development"`
+}
 
-		// Billing service configuration
-		// Default Url: http://localhost:8084
-		// Default GrpcAddr: localhost:9084
-		Billing configloader.ServiceConnectionConfig `koanf:"billing" yaml:"billing"`
-	} `koanf:"services" yaml:"services"`
+type ServicesConfig struct {
+	Task      ServiceConnectionConfig `yaml:"task"`
+	Scheduler ServiceConnectionConfig `yaml:"scheduler"`
+	Billing   ServiceConnectionConfig `yaml:"billing"`
+}
+
+type ServiceConnectionConfig struct {
+	URL      string `yaml:"url"       env:"{PREFIX}_URL"       env-default:"http://localhost:8080"`
+	GRPCAddr string `yaml:"grpc_addr" env:"{PREFIX}_GRPC_ADDR" env-default:"localhost:9090"`
 }

@@ -2,69 +2,88 @@ package configloader
 
 import (
 	"fmt"
-	"github.com/knadh/koanf/parsers/yaml"
-	"github.com/knadh/koanf/providers/env"
-	"github.com/knadh/koanf/providers/file"
-	"github.com/knadh/koanf/v2"
+	"github.com/ilyakaznacheev/cleanenv"
+	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-// LoadApplicationConfig loads the configuration and then validates it.
-// It returns the loaded and validated configuration.
-// If validation fails, it panics with an error message.
+// LoadApplicationConfig loads and validates config.
+// It applies defaults, then YAML, then ENV.
 func LoadApplicationConfig[T any](prefix string) T {
-	// Load configuration
-	config := loadConfig[T](prefix)
-
-	// Validate configuration
-	if err := ValidateConfig(config); err != nil {
-		panic(fmt.Sprintf("configuration validation failed: %v", err))
-	}
-
-	return config
-}
-
-func loadConfig[T any](prefix string) T {
 	var cfg T
-	k := koanf.New(".")
 
-	loadYamlConfig(k, prefix)
+	configPath := resolveConfigPath(prefix)
+	log.Printf("Loading config from: %s", configPath)
 
-	// Override with environment variables
-	k.Load(env.Provider(prefix+"_", ".", func(s string) string {
-		//convert MYAPP_SERVER_PORT -> server.port
-		return strings.ToLower(strings.ReplaceAll(s, "_", "."))
-	}), nil)
-
-	// Unmarshal into typed struct
-	if err := k.Unmarshal("", &cfg); err != nil {
-		log.Fatalf("failed to unmarshal config into struct: %v", err)
+	// Read a config file (optional)
+	err := cleanenv.ReadConfig(configPath, &cfg)
+	if err != nil {
+		log.Fatalf("failed to read config: %v", err)
 	}
+
+	if err := cleanenv.ReadEnv(&cfg); err != nil {
+		log.Fatalf("failed to read environment variables: %v", err)
+	}
+
+	printFinalConfig(cfg)
 
 	return cfg
 }
 
-func loadYamlConfig(k *koanf.Koanf, prefix string) {
-	filePrefix := strings.ReplaceAll(prefix, "_", "-")
+func printFinalConfig[T any](cfg T) {
+	out, err := yaml.Marshal(cfg)
+	if err != nil {
+		log.Printf("Failed to marshal config to YAML: %v", err)
+		return
+	}
+	log.Println("Configuration:")
+	log.Println(string(out))
+}
 
-	configPaths := []string{
-		filepath.Join("configs", fmt.Sprintf("%s.yml", prefix)),
-		filepath.Join("configs", fmt.Sprintf("%s.yml", filePrefix)),
+func resolveConfigPath(prefix string) string {
+	// 1. CONFIG_PATH env
+	if custom := os.Getenv("CONFIG_PATH"); custom != "" {
+		return custom
 	}
 
-	for _, path := range configPaths {
+	// 2. Try to resolve from known locations
+	filePrefix := strings.ReplaceAll(prefix, "_", "-")
+	candidates := []string{
+		filepath.Join(findConfigDir(), fmt.Sprintf("%s.yml", prefix)),
+		filepath.Join(findConfigDir(), fmt.Sprintf("%s.yml", filePrefix)),
+	}
+
+	for _, path := range candidates {
 		if _, err := os.Stat(path); err == nil {
-			if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
-				log.Printf("Warning: failed to load config from %s: %v", path, err)
-			} else {
-				log.Printf("Loaded configuration from %s", path)
-			}
-			return
+			return path
 		}
 	}
 
-	log.Printf("Warning: no config file found for prefix %s", prefix)
+	log.Fatalf("no config file found for prefix %s", prefix)
+	return ""
+}
+
+func findConfigDir() string {
+	dir, err := os.Getwd()
+	if err != nil {
+		log.Fatalf("could not get working directory: %v", err)
+	}
+
+	for i := 0; i < 5; i++ {
+		configs := filepath.Join(dir, "configs")
+		if stat, err := os.Stat(configs); err == nil && stat.IsDir() {
+			return configs
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			break
+		}
+		dir = parent
+	}
+
+	log.Fatalf("configs directory not found near working directory")
+	return ""
 }

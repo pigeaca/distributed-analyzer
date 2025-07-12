@@ -1,53 +1,24 @@
 package config
 
 import (
-	"distributed-analyzer/libs/config"
+	configloader "distributed-analyzer/libs/config"
 )
 
 type Config struct {
-	// Server settings
-	ServerConfig configloader.ServerConfig `yaml:",inline"`
-
-	// Kafka settings
-	Kafka KafkaConfig `yaml:"kafka"`
-
-	// Database settings
-	Database configloader.DatabaseConfig `yaml:"database"`
-
-	// Log settings
-	Log configloader.LogConfig `yaml:"log"`
-
-	// ShutdownTimeout specifies how long to wait for graceful shutdown
-	// Can be set via SHUTDOWN_TIMEOUT environment variable
-	// Default: 30s
-	ShutdownTimeout string `envconfig:"SHUTDOWN_TIMEOUT" default:"30s" yaml:"shutdown_timeout"`
+	ServerConfig    configloader.ServerConfig   `yaml:",inline"`
+	Kafka           KafkaConfig                 `yaml:"kafka"`
+	Database        configloader.DatabaseConfig `yaml:"database"`
+	Log             configloader.LogConfig      `yaml:"log"`
+	ShutdownTimeout string                      `yaml:"shutdown_timeout" env:"SHUTDOWN_TIMEOUT" env-default:"30s"`
 }
 
-// KafkaConfig extends the common KafkaConfig with task-specific settings
+// KafkaConfig extends the common KafkaConfig with task-specific topics
 type KafkaConfig struct {
-	// Embed the common KafkaConfig
 	configloader.KafkaConfig `yaml:",inline"`
-
-	// Override Topics with the task-specific topics
-	Topics KafkaTopicsConfig `yaml:"topics"`
+	Topics                   KafkaTopicsConfig `yaml:"topics"`
 }
 
-// SetDefaults sets default values for the KafkaConfig
-func (c *KafkaConfig) SetDefaults() {
-	if c.GroupID == "" {
-		c.GroupID = "task-service"
-	}
-}
-
-// KafkaTopicsConfig holds Kafka topics configuration
 type KafkaTopicsConfig struct {
-	// Tasks specifies the task topic
-	// Can be set via KAFKA_TOPIC_TASKS environment variable
-	// Default: tasks
-	Tasks string `envconfig:"KAFKA_TOPIC_TASKS" default:"tasks" yaml:"tasks"`
-
-	// Results specify the result topic
-	// Can be set via KAFKA_TOPIC_RESULTS environment variable
-	// Default: results
-	Results string `envconfig:"KAFKA_TOPIC_RESULTS" default:"results" yaml:"results"`
+	Tasks   string `yaml:"tasks"   env:"KAFKA_TOPIC_TASKS"   env-default:"tasks"`
+	Results string `yaml:"results" env:"KAFKA_TOPIC_RESULTS" env-default:"results"`
 }

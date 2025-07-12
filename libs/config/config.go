@@ -1,86 +1,33 @@
-// Package config provides common configuration structures used across services
 package configloader
 
 // ServerConfig holds common server configuration settings
 type ServerConfig struct {
-	// Port specifies the HTTP server port
-	// Can be set via PORT environment variable
-	Port string `envconfig:"PORT" yaml:"port"`
-
-	// GrpcPort specifies the gRPC server port
-	// Can be set via GRPC_PORT environment variable
-	GrpcPort string `envconfig:"GRPC_PORT" yaml:"grpc_port"`
-
-	// Env specifies the environment (development, staging, production)
-	// Can be set via ENV environment variable
-	// Default: development
-	Env string `envconfig:"ENV" default:"development" yaml:"env"`
+	Port     string `yaml:"port"      env:"PORT"`
+	GrpcPort string `yaml:"grpc_port" env:"GRPC_PORT"`
+	Env      string `yaml:"env"       env:"ENV" env-default:"development"`
 }
 
-// DatabaseConfig holds database-related configuration
 type DatabaseConfig struct {
-	// Host specifying the database host
-	// Can be set via DB_HOST environment variable
-	// Default: localhost
-	Host string `envconfig:"DB_HOST" default:"localhost" yaml:"host"`
-
-	// Port specifies the database port
-	// Can be set via DB_PORT environment variable
-	// Default: 5432
-	Port int `envconfig:"DB_PORT" default:"5432" yaml:"port"`
-
-	// User specifies the database user
-	// Can be set via DB_USER environment variable
-	// Default: postgres
-	User string `envconfig:"DB_USER" default:"postgres" yaml:"user"`
-
-	// Password specifies the database password
-	// Can be set via DB_PASSWORD environment variable
-	// Default: postgres
-	Password string `envconfig:"DB_PASSWORD" default:"postgres" yaml:"password"`
-
-	// Name specifies the database name
-	// Can be set via DB_NAME environment variable
-	Name string `envconfig:"DB_NAME" yaml:"name"`
-
-	// SSLMode specifies the database SSL mode
-	// Can be set via DB_SSL_MODE environment variable
-	// Default: disable
-	SSLMode string `envconfig:"DB_SSL_MODE" default:"disable" yaml:"ssl_mode"`
+	Host     string `yaml:"host"     env:"DB_HOST"     env-default:"localhost"`
+	Port     int    `yaml:"port"     env:"DB_PORT"     env-default:"5432"`
+	User     string `yaml:"user"     env:"DB_USER"     env-default:"postgres"`
+	Password string `yaml:"password" env:"DB_PASSWORD" env-default:"postgres"`
+	Name     string `yaml:"name"     env:"DB_NAME"`
+	SSLMode  string `yaml:"ssl_mode" env:"DB_SSL_MODE" env-default:"disable"`
 }
 
-// LogConfig holds logging configuration
 type LogConfig struct {
-	// Level specifies the log level
-	// Can be set via LOG_LEVEL environment variable
-	// Default: info
-	Level string `envconfig:"LOG_LEVEL" default:"info" yaml:"level"`
-
-	// Format specifying the log format
-	// Can be set via LOG_FORMAT environment variable
-	// Default: json
-	Format string `envconfig:"LOG_FORMAT" default:"json" yaml:"format"`
+	Level  string `yaml:"level"  env:"LOG_LEVEL"  env-default:"info"`
+	Format string `yaml:"format" env:"LOG_FORMAT" env-default:"json"`
 }
 
-// KafkaConfig holds Kafka-related configuration
 type KafkaConfig struct {
-	Topics []string `envconfig:"KAFKA_TOPICS" yaml:"topics"`
-	// Brokers specifies the Kafka brokers
-	// Can be set via KAFKA_BROKERS environment variable
-	// Default: localhost:9092
-	Brokers []string `envconfig:"KAFKA_BROKERS" default:"localhost:9092" yaml:"brokers"`
-
-	// GroupID specifies the Kafka consumer group ID
-	// Can be set via KAFKA_GROUP_ID environment variable
-	GroupID string `envconfig:"KAFKA_GROUP_ID" yaml:"group_id"`
+	Topics  []string `yaml:"topics"  env:"KAFKA_TOPICS"`
+	Brokers []string `yaml:"brokers" env:"KAFKA_BROKERS" env-default:"localhost:9092"`
+	GroupID string   `yaml:"group_id" env:"KAFKA_GROUP_ID"`
 }
 
-// ServiceConnectionConfig holds service connection details
 type ServiceConnectionConfig struct {
-	// Url specifies the Url of the service for HTTP communication
-	Url string `koanf:"url" yaml:"url"`
-
-	// GrpcAddr specifies the gRPC address of the service
-	// Can be set via <SERVICE>_GRPC_ADDR environment variable
-	GrpcAddr string `koanf:"grpc_addr" yaml:"grpc_addr"`
+	URL      string `yaml:"url"       env:"SERVICE_URL"`
+	GRPCAddr string `yaml:"grpc_addr" env:"SERVICE_GRPC_ADDR"`
 }
