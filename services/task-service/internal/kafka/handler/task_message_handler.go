@@ -2,12 +2,12 @@ package handler
 
 import (
 	"context"
+	"distributed-analyzer/libs/model"
+	pb "distributed-analyzer/libs/proto/kafka"
+	taskpb "distributed-analyzer/libs/proto/task"
+	"distributed-analyzer/services/task-service/internal/service"
 	"encoding/json"
 	"fmt"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
-	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
-	taskpb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/service"
 	"github.com/segmentio/kafka-go"
 	"time"
 )

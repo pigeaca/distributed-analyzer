@@ -47,12 +47,27 @@ func (c *Consumer) Start(ctx context.Context) {
 	}
 }
 
-func (c *Consumer) Stop() {
-	for topic, stopCh := range c.stopChannels {
-		close(stopCh)
-		if err := c.readers[topic].Close(); err != nil {
-			log.Printf("Error closing Kafka reader for topic %s: %v", topic, err)
+func (c *Consumer) Stop(ctx context.Context) {
+	// Create a channel to signal when all readers are closed
+	done := make(chan struct{})
+
+	go func() {
+		for topic, stopCh := range c.stopChannels {
+			close(stopCh)
+			if err := c.readers[topic].Close(); err != nil {
+				log.Printf("Error closing Kafka reader for topic %s: %v", topic, err)
+			}
 		}
+		close(done)
+	}()
+
+	// Wait for either all readers to close or context to be canceled
+	select {
+	case <-done:
+		return
+	case <-ctx.Done():
+		log.Printf("Context canceled while stopping Kafka consumer: %v", ctx.Err())
+		return
 	}
 }
 

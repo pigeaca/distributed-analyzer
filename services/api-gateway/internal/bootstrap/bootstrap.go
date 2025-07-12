@@ -1,11 +1,11 @@
 package bootstrap
 
 import (
-	"github.com/gin-gonic/gin"
-	app "github.com/pigeaca/DistributedMarketplace/libs/application"
-	component "github.com/pigeaca/DistributedMarketplace/libs/application/http"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/config"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/http"
+	app "distributed-analyzer/libs/application"
+	component "distributed-analyzer/libs/application/http"
+	"distributed-analyzer/services/api-gateway/internal/config"
+	"distributed-analyzer/services/api-gateway/internal/http"
+	"gith
 	"log"
 )
 

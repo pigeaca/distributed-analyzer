@@ -1,4 +1,4 @@
-module github.com/pigeaca/DistributedMarketplace/libs/proto
+module distributed-analyzer/libs/proto
 
 go 1.24
 

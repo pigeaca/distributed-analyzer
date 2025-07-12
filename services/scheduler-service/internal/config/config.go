@@ -1,6 +1,6 @@
 package config
 
-import "github.com/pigeaca/DistributedMarketplace/libs/common/config"
+import "distributed-analyzer/libs/common/config"
 
 type Config struct {
 	// Server settings
@@ -14,6 +14,11 @@ type Config struct {
 
 	// Log settings
 	Log config.LogConfig `yaml:"log"`
+
+	// ShutdownTimeout specifies how long to wait for graceful shutdown
+	// Can be set via SHUTDOWN_TIMEOUT environment variable
+	// Default: 30s
+	ShutdownTimeout string `envconfig:"SHUTDOWN_TIMEOUT" default:"30s" yaml:"shutdown_timeout"`
 }
 
 // KafkaConfig extends the common KafkaConfig with scheduler-specific settings

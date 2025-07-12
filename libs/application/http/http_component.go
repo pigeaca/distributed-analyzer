@@ -2,9 +2,9 @@ package component
 
 import (
 	"context"
+	"distrib
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/pigeaca/DistributedMarketplace/libs/common/config"
 	"log"
 	"net/http"
 	"time"

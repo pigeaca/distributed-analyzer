@@ -1,23 +1,23 @@
-module github.com/pigeaca/DistributedMarketplace/services/worker-manager
+module distributed-analyzer/services/worker-manager
 
 go 1.24
 
 require (
 	github.com/gin-gonic/gin v1.10.1
-	github.com/pigeaca/DistributedMarketplace/libs/application v0.0.0
-	github.com/pigeaca/DistributedMarketplace/libs/common v0.0.0
-	github.com/pigeaca/DistributedMarketplace/libs/config v0.0.0
-	github.com/pigeaca/DistributedMarketplace/libs/model v0.0.0
+	distributed-analyzer/libs/application v0.0.0
+	distributed-analyzer/libs/common v0.0.0
+	distributed-analyzer/libs/config v0.0.0
+	distributed-analyzer/libs/model v0.0.0
 	google.golang.org/protobuf v1.36.6
 )
 
-replace github.com/pigeaca/DistributedMarketplace/libs/application => ../../libs/application
+replace distributed-analyzer/libs/application => ../../libs/application
 
-replace github.com/pigeaca/DistributedMarketplace/libs/config => ../../libs/config
+replace distributed-analyzer/libs/config => ../../libs/config
 
-replace github.com/pigeaca/DistributedMarketplace/libs/common => ../../libs/common
+replace distributed-analyzer/libs/common => ../../libs/common
 
-replace github.com/pigeaca/DistributedMarketplace/libs/model => ../../libs/model
+replace distributed-analyzer/libs/model => ../../libs/model
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

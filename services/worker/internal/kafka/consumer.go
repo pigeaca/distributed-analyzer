@@ -2,10 +2,10 @@ package kafka
 
 import (
 	"context"
+	pb "distributed-analyzer/libs/proto/kafka"
+	"distributed-analyzer/services/worker/internal/service"
 	"encoding/json"
 	"fmt"
-	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
-	"github.com/pigeaca/DistributedMarketplace/services/worker/internal/service"
 	"github.com/segmentio/kafka-go"
 	"log"
 )

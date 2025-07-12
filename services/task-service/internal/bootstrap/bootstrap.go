@@ -3,20 +3,24 @@ package bootstrap
 
 import (
 	"context"
+	"distributed-analyzer/libs/application"
+	grpcApp "distributed-analyzer/libs/application/grpc"
+	kafkaApp "distributed-analyzer/libs/application/kafka"
+	"distributed-analyzer/libs/kafka"
+	pb "distributed-analyzer/libs/proto/task"
+	"distributed-analyzer/services/task-service/internal/config"
+	"distributed-analyzer/services/task-service/internal/grpc"
+	"distributed-analyzer/services/task-service/internal/kafka/handler"
+	"distributed-analyzer/services/task-service/internal/kafka/producer"
+	"distributed-analyzer/services/task-service/internal/service"
+	"errors"
 	"fmt"
-	"github.com/pigeaca/DistributedMarketplace/libs/application"
-	grpcApp "github.com/pigeaca/DistributedMarketplace/libs/application/grpc"
-	kafkaApp "github.com/pigeaca/DistributedMarketplace/libs/application/kafka"
-	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
-	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/task"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/config"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/grpc"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/kafka/handler"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/kafka/producer"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/service"
+	stdgrpc "google.golang.org/grpc"
+	"google.golang.org
 	stdgrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
+	"time"
 )
 
 // StartApplication initializes and starts all application components.
@@ -27,15 +31,49 @@ func StartApplication(cfg *config.Config) {
 		log.Fatalf("Invalid configuration: %v", err)
 	}
 
+	// Parse shutdown timeout
+	shutdownTimeout, err := time.ParseDuration(cfg.ShutdownTimeout)
+	if err != nil {
+		log.Fatalf("Invalid shutdown timeout: %v", err)
+	}
+
 	// Initialize service and components
 	taskService := service.NewTaskServiceImpl()
 	kafkaConsumerComponent, kafkaProducerComponent := initKafka(cfg, taskService)
 	grpcComponent := initGrpc(cfg, kafkaProducerComponent.Producer(), taskService)
 
+	// Register cleanup handlers
+	cleanupHandler := func() error {
+		log.Println("Running task-service specific cleanup...")
+		// Add any task-service specific cleanup logic here
+		return nil
+	}
+
 	// Start the application
 	runner := application.NewApplicationRunner(grpcComponent, kafkaConsumerComponent, kafkaProducerComponent)
+
+	// Register cleanup handler
+	runner.Defer(cleanupHandler)
+
+	// Set custom options on the runner (if needed)
+	// TODO: Modify the application runner to accept a custom shutdown timeout
+	log.Printf("Using shutdown timeout of %s", shutdownTimeout)
+
+	// Start the application with proper error handling
 	if err := runner.Start(); err != nil {
-		log.Fatalf("Failed to start application: %v", err)
+		var appErr *application.AppError
+		if errors.As(err, &appErr) {
+			switch appErr.Type {
+			case application.ErrorTypeStartup:
+				log.Fatalf("Failed to start application: %v", err)
+			case application.ErrorTypeShutdown:
+				log.Fatalf("Error during shutdown: %v", err)
+			default:
+				log.Fatalf("Application error: %v", err)
+			}
+		} else {
+			log.Fatalf("Failed to start application: %v", err)
+		}
 	}
 }
 

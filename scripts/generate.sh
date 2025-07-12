@@ -27,49 +27,49 @@ echo "Generating Go code from proto files..."
 
 # Task service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/task/task.proto
 
 # Scheduler service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/scheduler/scheduler.proto
 
 # Worker service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/worker/worker.proto
 
 # Result service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/result/result.proto
 
 # Billing service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/billing/billing.proto
 
 # Audit service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/audit/audit.proto
 
 # User service
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
-    --go-grpc_out=. --go-grpc_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
+    --go-grpc_out=. --go-grpc_opt=module=distributed-analyzer \
     $PROTO_DIR/user/user.proto
 
 # Kafka messages
 protoc -I . \
-    --go_out=. --go_opt=module=github.com/pigeaca/DistributedMarketplace \
+    --go_out=. --go_opt=module=distributed-analyzer \
     $PROTO_DIR/kafka/messages.proto
 
 echo "Code generation complete!"

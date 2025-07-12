@@ -2,9 +2,9 @@ package client
 
 import (
 	"context"
+	"distributed-analyzer/libs/model"
 	"encoding/json"
 	"fmt"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
 	"io"
 	"net/http"
 	"strings"

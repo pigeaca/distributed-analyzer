@@ -1,10 +1,10 @@
 package http
 
 import (
+	"distributed-analyzer/services/api-gateway/internal/config"
+	"distributed-analyzer/services/api-gateway/internal/http/handlers"
+	"distributed-analyzer/services/api-gateway/internal/service/grpc"
 	"github.com/gin-gonic/gin"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/config"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/http/handlers"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/service/grpc"
 )
 
 func RegisterRoutes(r *gin.Engine, cfg *config.Config) *gin.Engine {

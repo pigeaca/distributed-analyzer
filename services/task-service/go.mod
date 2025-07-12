@@ -1,4 +1,4 @@
-module github.com/pigeaca/DistributedMarketplace/services/task-service
+module distributed-analyzer/services/task-service
 
 go 1.24
 

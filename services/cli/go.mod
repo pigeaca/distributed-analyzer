@@ -1,4 +1,4 @@
-module github.com/pigeaca/DistributedMarketplace/services/cli
+module distributed-analyzer/services/cli
 
 go 1.24
 

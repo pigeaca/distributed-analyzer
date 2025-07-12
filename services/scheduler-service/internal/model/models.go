@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	"distributed-analyzer/libs/model"
 )
 
 // SchedulerTask represents a task from the scheduler's perspective

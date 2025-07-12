@@ -2,9 +2,9 @@ package grpc
 
 import (
 	"context"
+	"distributed-analyzer/libs/model"
+	pbW "distributed-analyzer/libs/proto/worker"
 	"fmt"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
-	pbW "github.com/pigeaca/DistributedMarketplace/libs/proto/worker"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"log"

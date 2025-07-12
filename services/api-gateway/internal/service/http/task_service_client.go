@@ -2,9 +2,9 @@ package http
 
 import (
 	"context"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/client"
-	"github.com/pigeaca/DistributedMarketplace/services/task-service/internal/model"
-	taskService "github.com/pigeaca/DistributedMarketplace/services/task-service/internal/service"
+	"distributed-analyzer/services/task-service/internal/client"
+	"distributed-analyzer/services/task-service/internal/model"
+	taskService "distributed-analyzer/services/task-service/internal/service"
 )
 
 // TaskServiceHttpClient is a client implementation of the TaskService interface

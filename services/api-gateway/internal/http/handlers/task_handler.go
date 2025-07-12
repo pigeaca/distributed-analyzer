@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"distributed-analyzer/libs/model"
+	"distributed-analyzer/services/api-gateway/internal/service"
 	"github.com/gin-gonic/gin"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
-	"github.com/pigeaca/DistributedMarketplace/services/api-gateway/internal/service"
 )
 
 type TaskHandler struct {

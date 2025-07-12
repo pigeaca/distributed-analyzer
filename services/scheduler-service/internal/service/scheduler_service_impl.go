@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
+	"distributed-analyzer/libs/kafka"
+	"distributed-analyzer/libs/model"
+	"distributed-analyzer/services/scheduler-service/internal/grpc"
+	"distributed-analyzer/services/scheduler-service/internal/kafka/producer"
 	"errors"
-	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
-	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/grpc"
-	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/kafka/producer"
 	"log"
 )
 

@@ -1,4 +1,4 @@
-module github.com/pigeaca/DistributedMarketplace/services/scheduler-service
+module distributed-analyzer/services/scheduler-service
 
 go 1.24
 

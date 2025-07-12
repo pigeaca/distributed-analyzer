@@ -1,3 +1,3 @@
-module github.com/pigeaca/DistributedMarketplace/libs/common
+module distributed-analyzer/libs/common
 
 go 1.24

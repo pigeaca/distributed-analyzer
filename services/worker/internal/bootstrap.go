@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	app "github.com/pigeaca/DistributedMarketplace/libs/application"
-	"github.com/pigeaca/DistributedMarketplace/services/worker/internal/config"
+	app "distributed-analyzer/libs/application"
+	"distributed-analyzer/services/worker/internal/config"
 )
 
 func StartApplication(cfg *config.Config) error {

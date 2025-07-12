@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
+	"distributed-analyzer/libs/model"
 	"errors"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
 	"sync"
 	"time"
 )

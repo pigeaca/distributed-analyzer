@@ -2,8 +2,8 @@ package kafka
 
 import (
 	"context"
+	pb "distributed-analyzer/libs/proto/kafka"
 	"encoding/json"
-	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
 	"github.com/segmentio/kafka-go"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"

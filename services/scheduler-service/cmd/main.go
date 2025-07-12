@@ -1,9 +1,9 @@
 package main
 
 import (
-	configloader "github.com/pigeaca/DistributedMarketplace/libs/config"
-	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/bootstrap"
-	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/config"
+	configloader "distributed-analyzer/libs/config"
+	"distributed-analyzer/services/scheduler-service/internal/bootstrap"
+	"distributed-analyzer/services/scheduler-service/internal/config"
 )
 
 func main() {

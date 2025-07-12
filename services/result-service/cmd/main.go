@@ -1,9 +1,9 @@
 package main
 
 import (
-	configloader "github.com/pigeaca/DistributedMarketplace/libs/config"
-	"github.com/pigeaca/DistributedMarketplace/services/result-service/internal/bootstrap"
-	"github.com/pigeaca/DistributedMarketplace/services/result-service/internal/config"
+	configloader "distributed-analyzer/libs/config"
+	"distributed-analyzer/services/result-service/internal/bootstrap"
+	"distributed-analyzer/services/result-service/internal/config"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/pigeaca/DistributedMarketplace/libs/kafka
+module distributed-analyzer/libs/kafka
 
 go 1.24
 

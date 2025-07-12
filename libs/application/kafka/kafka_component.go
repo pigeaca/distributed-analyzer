@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/pigeaca/DistributedMarketplace/libs/kafka"
+	"distributed-analyzer/libs/kafka"
 )
 
 // ConsumerComponent wraps a Kafka consumer as an application component.
@@ -39,7 +39,7 @@ func (k *ConsumerComponent) Stop(ctx context.Context) error {
 	if k.consumer == nil {
 		return nil // Nothing to stop
 	}
-	k.consumer.Stop()
+	k.consumer.Stop(ctx)
 	return nil
 }
 

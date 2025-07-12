@@ -1,6 +1,6 @@
 package config
 
-import "github.com/pigeaca/DistributedMarketplace/libs/common/config"
+import "distributed-analyzer/libs/common/config"
 
 // Config holds the API gateway configuration
 type Config struct {
@@ -10,6 +10,11 @@ type Config struct {
 	// Services hold the configuration for all-services
 	// WorkerManagement settings
 	WorkerManagement WorkerManagementConfig `yaml:"worker_management"`
+
+	// ShutdownTimeout specifies how long to wait for graceful shutdown
+	// Can be set via SHUTDOWN_TIMEOUT environment variable
+	// Default: 30s
+	ShutdownTimeout string `envconfig:"SHUTDOWN_TIMEOUT" default:"30s" yaml:"shutdown_timeout"`
 }
 
 // WorkerManagementConfig holds worker management configuration

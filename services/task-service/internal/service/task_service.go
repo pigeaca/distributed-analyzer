@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"github.com/pigeaca/DistributedMarketplace/libs/model"
+	"distributed-analyzer/libs/model"
 )
 
 // TaskService defines the interface for task-related operations

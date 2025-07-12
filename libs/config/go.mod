@@ -1,4 +1,4 @@
-module github.com/pigeaca/DistributedMarketplace/libs/config
+module distributed-analyzer/libs/config
 
 go 1.24
 

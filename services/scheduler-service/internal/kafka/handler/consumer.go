@@ -2,10 +2,10 @@ package handler
 
 import (
 	"context"
+	pb "distributed-analyzer/libs/proto/kafka"
+	"distributed-analyzer/services/scheduler-service/internal/service"
 	"encoding/json"
 	"fmt"
-	pb "github.com/pigeaca/DistributedMarketplace/libs/proto/kafka"
-	"github.com/pigeaca/DistributedMarketplace/services/scheduler-service/internal/service"
 	"github.com/segmentio/kafka-go"
 	"log"
 )

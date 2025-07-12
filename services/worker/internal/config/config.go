@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/pigeaca/DistributedMarketplace/libs/common/config"
+	"distributed-analyzer/libs/common/config"
 )
 
 type Config struct {

@@ -1,6 +1,6 @@
 package config
 
-import "github.com/pigeaca/DistributedMarketplace/libs/common/config"
+import "distributed-analyzer/libs/common/config"
 
 // Config holds the API gateway configuration
 type Config struct {

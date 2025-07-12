@@ -1,3 +1,3 @@
-module github.com/pigeaca/DistributedMarketplace/services/worker
+module distributed-analyzer/services/worker
 
 go 1.24

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package billing;
 
-option go_package = "github.com/pigeaca/DistributedMarketplace/libs/proto/billing";
+option go_package = "distributed-analyzer/libs/proto/billing";
 
 import "google/protobuf/timestamp.proto";
 
