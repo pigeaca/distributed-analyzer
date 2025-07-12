@@ -1,125 +1,166 @@
 # Distributed Go Analyze Platform
-A distributed platform for executing and analyzing tasks — for example, building, statically analyzing, and benchmarking Go projects in a scalable way.
+
+**Distributed Go Analyze Platform** — a scalable, modular, and extensible system for building, statically analyzing, and
+benchmarking Go projects across a distributed infrastructure.
+
+Running CI at scale, validating open-source libraries, or building a Go-aware cloud platform.
+
+---
+
+## Key Features
+
+* High-throughput task execution
+* Intelligent worker selection by capabilities (e.g., race detection, benchmark mode)
+* Real-time observability and metrics
+* gRPC for internal APIs, Kafka for async workflows, REST for external clients
+* Designed with modularity, auditability, and cost-tracking in mind
+
+---
 
 ## Architecture Overview
 
-### Components
+### Core Components
 
 #### API Gateway
-- gRPC/REST entry point
-- Authentication (JWT)
-- Rate Limiting, Throttling
-- Proxy to components
+
+* Entry point for all clients (REST and gRPC)
+* Handles JWT authentication, rate limiting, and request routing
 
 #### Task Service
-- Creation and management of tasks
-- Statuses (Created, Scheduled, InProgress, Done, Failed)
-- Input data validation
-- Task storage (PostgresSQL)
-- Exposes gRPC API for task operations
+
+* Creates and validates tasks
+* Stores metadata in PostgreSQL
+* Publishes events (e.g. `TaskCreated`) for downstream processing
 
 #### Scheduler / Dispatcher
-- Subscribed to new task queue (Kafka)
-- Selects appropriate worker
-- Divides task into subtasks if needed
-- Assigns to workers
-- Exposes gRPC API for scheduling operations
+
+* Listens to Kafka for new task events
+* Selects the optimal worker node using Worker Manager
+* Splits tasks into subtasks and assigns them
 
 #### Worker Manager
-- Manages worker registration
-- Monitors worker statuses (healthcheck, capacity)
-- Matches worker capabilities (e.g., needs benchmarking support, or race detection)
-- Exposes gRPC API for worker management
+
+* Keeps track of available worker nodes
+* Matches workers based on capabilities and availability
+* Monitors health and load via heartbeats
 
 #### Worker Node (agent)
-- Receives tasks via Kafka or gRPC
-- Loads model
-- Executes task in sandbox (Docker / gVisor)
-- Sends result back via gRPC
-- Exposes gRPC API for task execution
+
+* Runs inside a sandbox (Docker/gVisor)
+* Pulls tasks from Kafka or receives via gRPC
+* Executes Go code and reports results
 
 #### Result Aggregator
-- Saves partial results
-- Finalizes result when a task is completed
-- Sets Done status
-- Exposes gRPC API for result operations
+
+* Collects partial results from workers
+* Finalizes output when all subtasks complete
+* Notifies Task Service and Billing
 
 #### Billing & Quotas
-- Task billing (time, model type, resources)
-- Token/balance support
-- User quotas
-- Exposes gRPC API for billing operations
+
+* Tracks usage and applies pricing rules
+* Enforces quotas, calculates cost
+* Integrates with user tokens or credits
 
 #### Audit & Logging
-- Task tracing, action logging
-- Protection against falsification (optional: hash chain, signatures)
-- Exposes gRPC API for audit operations
+
+* Records all significant actions
+* Optional tamper-resistant logging (hash-chaining)
+* Supports forensic analysis and compliance
 
 #### Monitoring / Observability
-- Prometheus + Grafana
-- OpenTelemetry + Jaeger
-- Logs via Loki/FluentBit
 
-### Storage
-- PostgreSQL: tasks, users, billing
-- Redis: states, heartbeats, cache
-- MinIO (S3): files (input/output), models
+* Prometheus for metrics
+* Jaeger (OpenTelemetry) for tracing
+* Loki/FluentBit for centralized logs
 
-### Communication
-- **gRPC**: Synchronous service-to-service communication
-- **Kafka**: Asynchronous event-driven communication
+---
+
+## Storage Technologies
+
+| Type      | Tool       | Purpose                        |
+|-----------|------------|--------------------------------|
+| SQL       | PostgreSQL | Tasks, users, billing metadata |
+| In-memory | Redis      | Cache, heartbeats, state       |
+| Object    | MinIO (S3) | Inputs, outputs, artifacts     |
+
+---
+
+## Communication Patterns
+
+* **gRPC**: Internal service-to-service RPC
+* **Kafka**: Async event streaming between components
+* **REST**: External API for client/task submission
+
+---
 
 ## Workflows
 
-### Task Placement Flow
-1. User sends a task → API Gateway (REST)
-2. Gateway → TaskService (gRPC) → validation, task saving
-3. TaskService publishes TaskCreatedEvent → Kafka → Scheduler subscribes
+### Task Lifecycle (Simplified Diagram)
 
-### Task Execution Flow
-1. Scheduler selects a worker (by capability) using WorkerManager (gRPC)
-2. Scheduler publishes TaskAssignedEvent → Kafka → Worker subscribes
-3. Worker executes a task and writes a partial result to S3/MinIO
-4. Worker calls ResultAggregator (gRPC) to save partial results
-5. Worker publishes SubTaskCompletedEvent → Kafka
+```text
+User → API Gateway → Task Service
+                       ↓
+              Kafka: TaskCreated
+                       ↓
+                 Scheduler
+                       ↓
+          gRPC → Worker Manager
+                       ↓
+              Kafka: TaskAssigned
+                       ↓
+                   Worker
+                       ↓
+        ┌──────────────┬───────────────┐
+        ↓                             ↓
+ MinIO (partial output)     gRPC → Result Aggregator
+                                      ↓
+                        Kafka: SubTaskCompleted
+                                      ↓
+                           ResultAggregator
+                                      ↓
+                          Kafka: TaskCompleted
+                                      ↓
+                ┌──────────────┬───────────────┐
+                ↓                              ↓
+        Task Service                   Billing Service
+```
 
-### Completion Flow
-1. ResultAggregator finalizes a result when all subtasks are completed
-2. ResultAggregator publishes TaskCompletedEvent → Kafka
-3. TaskService updates task status (subscribes to TaskCompletedEvent)
-4. BillingService charges cost (subscribes to TaskCompletedEvent)
-5. User can download a result via API Gateway (REST)
+---
 
-### Monitoring Flow
-1. All components emit metrics to Prometheus
-2. All components send traces to Jaeger via OpenTelemetry
-3. All components log to centralized logging (Loki/FluentBit)
-4. AuditService records all significant actions (subscribes to AuditEvent)
+## Protocol Buffers & Code Generation
 
-## Protocol Buffers and gRPC
+The system uses Protocol Buffers to define service interfaces and messages. All proto files are located in the `proto/`
+directory:
 
-### Proto Files
-The project uses Protocol Buffers (protobuf) for defining service interfaces and message types. Proto files are located in the `proto` directory:
+```
+proto/
+├── task/task.proto
+├── scheduler/scheduler.proto
+├── worker/worker.proto
+├── result/result.proto
+├── billing/billing.proto
+├── audit/audit.proto
+├── user/user.proto
+└── kafka/messages.proto
+```
 
-- `proto/task/task.proto`: Task service interface and message types
-- `proto/scheduler/scheduler.proto`: Scheduler service interface and message types
-- `proto/worker/worker.proto`: Worker service interface and message types
-- `proto/result/result.proto`: Result service interface and message types
-- `proto/billing/billing.proto`: Billing service interface and message types
-- `proto/audit/audit.proto`: Audit service interface and message types
-- `proto/user/user.proto`: User service interface and message types
-- `proto/kafka/messages.proto`: Kafka message types for asynchronous communication
-
-### Code Generation
-To generate Go code from proto files, use the following command:
+To generate Go code:
 
 ```bash
 ./scripts/generate.sh
 ```
 
-This will generate:
-- gRPC service interfaces and clients
-- Message type structs
-- Serialization/deserialization code
+Outputs will be placed in `pkg/proto`, and include:
 
-The generated code will be placed in the `pkg/proto` directory.
+* gRPC clients and servers
+* Typed message structs
+* Efficient serialization logic
+
+---
+
+## Summary
+
+This platform is purpose-built for scalable, distributed Go task execution — combining modern infrastructure tooling.
+
+---
