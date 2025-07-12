@@ -6,7 +6,7 @@ import (
 
 type Config struct {
 	// Server settings
-	config.ServerConfig `yaml:",inline"`
+	ServerConfig config.ServerConfig `yaml:",inline"`
 
 	// Kafka settings
 	Kafka KafkaConfig `yaml:"kafka"`

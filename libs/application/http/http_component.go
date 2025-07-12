@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"github.com/pigeaca/DistributedMarketplace/libs/common/config"
 	"log"
 	"net/http"
 	"time"
@@ -13,7 +14,8 @@ type GinHttpComponent struct {
 	server *http.Server
 }
 
-func NewGinHttpComponent(addr string, router *gin.Engine) *GinHttpComponent {
+func NewGinHttpComponent(cfg *config.ServerConfig, router *gin.Engine) *GinHttpComponent {
+	addr := ":" + cfg.Port
 	return &GinHttpComponent{
 		server: &http.Server{
 			Addr:    addr,

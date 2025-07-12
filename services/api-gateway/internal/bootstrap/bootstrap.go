@@ -19,7 +19,6 @@ func StartApplication(cfg *config.Config) {
 
 func initHttp(cfg *config.Config) *component.GinHttpComponent {
 	var routes = http.RegisterRoutes(gin.Default(), cfg)
-	addr := ":" + cfg.Port
-	httpComponent := component.NewGinHttpComponent(addr, routes)
+	httpComponent := component.NewGinHttpComponent(&cfg.ServerConfig, routes)
 	return httpComponent
 }

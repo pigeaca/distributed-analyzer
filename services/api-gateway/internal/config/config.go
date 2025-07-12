@@ -4,10 +4,7 @@ import "github.com/pigeaca/DistributedMarketplace/libs/common/config"
 
 // Config holds the API gateway configuration
 type Config struct {
-
-	// Port and Env settings
-	Port string `koanf:"port" default:"8081" yaml:"port"`
-	Env  string `koanf:"env" default:"development" yaml:"env"`
+	ServerConfig config.ServerConfig `koanf:"server" yaml:"server"`
 
 	// Services hold the configuration for all services
 	Services struct {

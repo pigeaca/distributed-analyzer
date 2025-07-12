@@ -13,19 +13,19 @@ import (
 func StartApplication(cfg *config.Config) {
 	producer := kafka.NewProducer(cfg.Kafka.Brokers)
 	schedulerService, err := service.NewSchedulerServiceImpl(cfg.GrpcPort, producer)
+	kafkaComponent, kafkaProducerComponent := initKafka(cfg, schedulerService, producer)
 	if err != nil {
 		log.Fatalf("failed to create scheduler service: %v", err)
 	}
-	kafkaComponent := initKafka(cfg, schedulerService)
-	runner := application.NewApplicationRunner(kafkaComponent)
+	runner := application.NewApplicationRunner(kafkaComponent, kafkaProducerComponent)
 	if err := runner.Start(); err != nil {
 		log.Println("Error while starting application", err)
 	}
 }
 
-func initKafka(cfg *config.Config, schedulerService service.SchedulerService) *app.KafkaComponent {
+func initKafka(cfg *config.Config, schedulerService service.SchedulerService, producer *kafka.Producer) (*app.ConsumerComponent, *app.ProducerComponent) {
 	taskHandler := handler.NewSchedulerHandler(schedulerService)
 	topics := []string{"task-created"}
 	consumer := kafka.NewConsumer(topics, cfg.Kafka.Brokers, cfg.Kafka.GroupID, taskHandler)
-	return app.NewKafkaComponent(consumer)
+	return app.NewKafkaComponent(consumer), app.NewKafkaProducerComponent(producer)
 }
