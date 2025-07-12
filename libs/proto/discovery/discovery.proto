@@ -1,0 +1,163 @@
+syntax = "proto3";
+
+package discovery;
+
+option go_package = "distributed-analyzer/libs/proto/discovery";
+
+import "google/protobuf/timestamp.proto";
+
+// ServiceType represents the type of service
+enum ServiceType {
+  SERVICE_TYPE_UNKNOWN = 0;
+  SERVICE_TYPE_API = 1;
+  SERVICE_TYPE_WORKER = 2;
+  SERVICE_TYPE_STORAGE = 3;
+  SERVICE_TYPE_TASK = 4;
+  SERVICE_TYPE_RESULT = 5;
+  SERVICE_TYPE_SCHEDULER = 6;
+  SERVICE_TYPE_WORKER_MANAGER = 7;
+}
+
+// ServiceInstance represents a registered service instance
+message ServiceInstance {
+  // ID is the unique identifier for the service instance
+  string id = 1;
+  
+  // Name is the name of the service
+  string name = 2;
+  
+  // Type is the type of service
+  ServiceType type = 3;
+  
+  // Host is the hostname or IP address of the service
+  string host = 4;
+  
+  // Port is the port number of the service
+  int32 port = 5;
+  
+  // GrpcPort is the gRPC port number of the service
+  int32 grpc_port = 6;
+  
+  // Metadata is additional metadata about the service
+  map<string, string> metadata = 7;
+  
+  // LastHeartbeat is the timestamp of the last heartbeat received from the service
+  google.protobuf.Timestamp last_heartbeat = 8;
+  
+  // RegisteredAt is the timestamp when the service was registered
+  google.protobuf.Timestamp registered_at = 9;
+}
+
+// RegisterRequest represents a service registration request
+message RegisterRequest {
+  // Name is the name of the service
+  string name = 1;
+  
+  // Type is the type of service
+  ServiceType type = 2;
+  
+  // Host is the hostname or IP address of the service
+  string host = 3;
+  
+  // Port is the port number of the service
+  int32 port = 4;
+  
+  // GrpcPort is the gRPC port number of the service
+  int32 grpc_port = 5;
+  
+  // Metadata is additional metadata about the service
+  map<string, string> metadata = 6;
+}
+
+// RegisterResponse represents a service registration response
+message RegisterResponse {
+  // ID is the unique identifier for the registered service instance
+  string id = 1;
+}
+
+// UnregisterRequest represents a service unregistration request
+message UnregisterRequest {
+  // ID is the unique identifier for the service instance
+  string id = 1;
+}
+
+// UnregisterResponse represents a service unregistration response
+message UnregisterResponse {
+  // Success indicates whether the unregistration was successful
+  bool success = 1;
+}
+
+// HeartbeatRequest represents a service heartbeat request
+message HeartbeatRequest {
+  // ID is the unique identifier for the service instance
+  string id = 1;
+  
+  // Metadata is additional metadata about the service that can be updated
+  map<string, string> metadata = 2;
+}
+
+// HeartbeatResponse represents a service heartbeat response
+message HeartbeatResponse {
+  // Success indicates whether the heartbeat was successful
+  bool success = 1;
+}
+
+// GetServiceRequest represents a request to get a service by ID
+message GetServiceRequest {
+  // ID is the unique identifier for the service instance
+  string id = 1;
+}
+
+// GetServiceResponse represents a response to get a service by ID
+message GetServiceResponse {
+  // Service is the service instance
+  ServiceInstance service = 1;
+}
+
+// FindServiceRequest represents a request to find services by type and/or name
+message FindServiceRequest {
+  // Type is the type of service to find
+  ServiceType type = 1;
+  
+  // Name is the name of the service to find
+  string name = 2;
+}
+
+// FindServiceResponse represents a response to find services by type and/or name
+message FindServiceResponse {
+  // Services is the list of service instances
+  repeated ServiceInstance services = 1;
+}
+
+// ListServicesRequest represents a request to list all services
+message ListServicesRequest {
+  // Type is the type of service to list
+  ServiceType type = 1;
+}
+
+// ListServicesResponse represents a response to list all services
+message ListServicesResponse {
+  // Services is the list of service instances
+  repeated ServiceInstance services = 1;
+}
+
+// DiscoveryService provides service discovery functionality
+service DiscoveryService {
+  // Register registers a service
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  
+  // Unregister removes a service from the registry
+  rpc Unregister(UnregisterRequest) returns (UnregisterResponse);
+  
+  // Heartbeat updates the last heartbeat timestamp for a service
+  rpc Heartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+  
+  // GetService retrieves a service by ID
+  rpc GetService(GetServiceRequest) returns (GetServiceResponse);
+  
+  // FindService finds services by type and/or name
+  rpc FindService(FindServiceRequest) returns (FindServiceResponse);
+  
+  // ListServices lists all services
+  rpc ListServices(ListServicesRequest) returns (ListServicesResponse);
+}

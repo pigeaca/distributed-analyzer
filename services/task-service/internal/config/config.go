@@ -1,21 +1,21 @@
 package config
 
 import (
-	"distributed-analyzer/libs/common/config"
+	"distributed-analyzer/libs/config"
 )
 
 type Config struct {
 	// Server settings
-	ServerConfig config.ServerConfig `yaml:",inline"`
+	ServerConfig configloader.ServerConfig `yaml:",inline"`
 
 	// Kafka settings
 	Kafka KafkaConfig `yaml:"kafka"`
 
 	// Database settings
-	Database config.DatabaseConfig `yaml:"database"`
+	Database configloader.DatabaseConfig `yaml:"database"`
 
 	// Log settings
-	Log config.LogConfig `yaml:"log"`
+	Log configloader.LogConfig `yaml:"log"`
 
 	// ShutdownTimeout specifies how long to wait for graceful shutdown
 	// Can be set via SHUTDOWN_TIMEOUT environment variable
@@ -26,7 +26,7 @@ type Config struct {
 // KafkaConfig extends the common KafkaConfig with task-specific settings
 type KafkaConfig struct {
 	// Embed the common KafkaConfig
-	config.KafkaConfig `yaml:",inline"`
+	configloader.KafkaConfig `yaml:",inline"`
 
 	// Override Topics with the task-specific topics
 	Topics KafkaTopicsConfig `yaml:"topics"`

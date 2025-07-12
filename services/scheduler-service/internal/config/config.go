@@ -1,10 +1,12 @@
 package config
 
-import "distributed-analyzer/libs/common/config"
+import (
+	"distributed-analyzer/libs/config"
+)
 
 type Config struct {
 	// Server settings
-	config.ServerConfig `yaml:",inline"`
+	configloader.ServerConfig `yaml:",inline"`
 
 	// Kafka settings
 	Kafka KafkaConfig `yaml:"kafka"`
@@ -13,7 +15,7 @@ type Config struct {
 	Scheduling SchedulingConfig `yaml:"scheduling"`
 
 	// Log settings
-	Log config.LogConfig `yaml:"log"`
+	Log configloader.LogConfig `yaml:"log"`
 
 	// ShutdownTimeout specifies how long to wait for graceful shutdown
 	// Can be set via SHUTDOWN_TIMEOUT environment variable
@@ -24,17 +26,10 @@ type Config struct {
 // KafkaConfig extends the common KafkaConfig with scheduler-specific settings
 type KafkaConfig struct {
 	// Embed the common KafkaConfig
-	config.KafkaConfig `yaml:",inline"`
+	configloader.KafkaConfig `yaml:",inline"`
 
 	// Override Topics with the scheduler-specific topics
 	Topics KafkaTopicsConfig `yaml:"topics"`
-}
-
-// SetDefaults sets default values for the KafkaConfig
-func (c *KafkaConfig) SetDefaults() {
-	if c.GroupID == "" {
-		c.GroupID = "scheduler-service"
-	}
 }
 
 // KafkaTopicsConfig holds Kafka topics configuration

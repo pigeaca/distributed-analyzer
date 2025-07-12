@@ -1,26 +1,28 @@
 package config
 
-import "distributed-analyzer/libs/common/config"
+import (
+	"distributed-analyzer/libs/config"
+)
 
 // Config holds the API gateway configuration
 type Config struct {
-	ServerConfig config.ServerConfig `koanf:"server" yaml:"server"`
+	ServerConfig configloader.ServerConfig `koanf:"server" yaml:"server"`
 
 	// Services hold the configuration for all services
 	Services struct {
 		// Task service configuration
 		// Default Url: http://localhost:8082
 		// Default GrpcAddr: localhost:9082
-		Task config.ServiceConnectionConfig `koanf:"task" yaml:"task"`
+		Task configloader.ServiceConnectionConfig `koanf:"task" yaml:"task"`
 
 		// Scheduler service configuration
 		// Default Url: http://localhost:8083
 		// Default GrpcAddr: localhost:9083
-		Scheduler config.ServiceConnectionConfig `koanf:"scheduler" yaml:"scheduler"`
+		Scheduler configloader.ServiceConnectionConfig `koanf:"scheduler" yaml:"scheduler"`
 
 		// Billing service configuration
 		// Default Url: http://localhost:8084
 		// Default GrpcAddr: localhost:9084
-		Billing config.ServiceConnectionConfig `koanf:"billing" yaml:"billing"`
+		Billing configloader.ServiceConnectionConfig `koanf:"billing" yaml:"billing"`
 	} `koanf:"services" yaml:"services"`
 }

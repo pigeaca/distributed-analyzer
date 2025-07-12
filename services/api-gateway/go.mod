@@ -5,7 +5,6 @@ go 1.24
 require (
 	github.com/gin-gonic/gin v1.10.1
 	distributed-analyzer/libs/application v0.0.0
-	distributed-analyzer/libs/common v0.0.0
 	distributed-analyzer/libs/config v0.0.0
 	distributed-analyzer/libs/model v0.0.0
 	google.golang.org/protobuf v1.36.6
@@ -14,8 +13,6 @@ require (
 replace distributed-analyzer/libs/application => ../../libs/application
 
 replace distributed-analyzer/libs/config => ../../libs/config
-
-replace distributed-analyzer/libs/common => ../../libs/common
 
 replace distributed-analyzer/libs/model => ../../libs/model
 

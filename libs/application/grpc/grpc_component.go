@@ -3,12 +3,12 @@ package grpc
 
 import (
 	"context"
+	"distributed-analyzer/libs/config"
 	"fmt"
 	"log"
 	"net"
 	"time"
 
-	"distributed-analyzer/libs/common/config"
 	"google.golang.org/grpc"
 )
 
@@ -21,7 +21,7 @@ type Component struct {
 
 // NewGrpcComponent creates a new GrpcComponent with the provided gRPC server and configuration.
 // It sets up a TCP listener on the configured port.
-func NewGrpcComponent(server *grpc.Server, cfg *config.ServerConfig) *Component {
+func NewGrpcComponent(server *grpc.Server, cfg *configloader.ServerConfig) *Component {
 	if server == nil {
 		log.Fatal("grpc server cannot be nil")
 	}

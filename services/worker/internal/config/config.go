@@ -1,12 +1,12 @@
 package config
 
 import (
-	"distributed-analyzer/libs/common/config"
+	"distributed-analyzer/libs/config"
 )
 
 type Config struct {
 	// Server settings
-	config.ServerConfig `yaml:",inline"`
+	configloader.ServerConfig `yaml:",inline"`
 
 	// Kafka settings
 	Kafka KafkaConfig `yaml:"kafka"`
@@ -18,13 +18,13 @@ type Config struct {
 	Worker WorkerConfig `yaml:"worker"`
 
 	// Log settings
-	Log config.LogConfig `yaml:"log"`
+	Log configloader.LogConfig `yaml:"log"`
 }
 
 // KafkaConfig extends the common KafkaConfig with worker-specific settings
 type KafkaConfig struct {
 	// Embed the common KafkaConfig
-	config.KafkaConfig `yaml:",inline"`
+	configloader.KafkaConfig `yaml:",inline"`
 
 	// Override Topics with the worker-specific topics
 	Topics KafkaTopicsConfig `yaml:"topics"`
@@ -46,10 +46,10 @@ type KafkaTopicsConfig struct {
 // ServicesConfig holds service connection configuration
 type ServicesConfig struct {
 	// Storage service configuration
-	Storage config.ServiceConnectionConfig `yaml:"storage"`
+	Storage configloader.ServiceConnectionConfig `yaml:"storage"`
 
 	// Result service configuration
-	Result config.ServiceConnectionConfig `yaml:"result"`
+	Result configloader.ServiceConnectionConfig `yaml:"result"`
 }
 
 // WorkerConfig holds worker-specific configuration

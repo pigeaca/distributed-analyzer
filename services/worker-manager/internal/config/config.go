@@ -1,11 +1,13 @@
 package config
 
-import "distributed-analyzer/libs/common/config"
+import (
+	"distributed-analyzer/libs/config"
+)
 
 // Config holds the API gateway configuration
 type Config struct {
 	// Server settings
-	config.ServerConfig `yaml:",inline"`
+	configloader.ServerConfig `yaml:",inline"`
 
 	// Services hold the configuration for all-services
 	// WorkerManagement settings

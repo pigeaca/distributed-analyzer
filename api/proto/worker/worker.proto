@@ -40,8 +40,8 @@ service WorkerNodeService {
 
 // Capability represents a worker capability
 message Capability {
-  string name = 1;  // e.g., "resnet50", "gpt-3"
-  string value = 2; // Version or other details
+  string name = 1;
+  string value = 2;
 }
 
 // Resource represents a computational resource

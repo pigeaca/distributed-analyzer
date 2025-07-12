@@ -3,9 +3,9 @@ package grpc
 import (
 	"context"
 	"distributed-analyzer/libs/model"
+	client2 "distributed-analyzer/libs/network/client"
 	pb "distributed-analyzer/libs/proto/task"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -15,7 +15,7 @@ type TaskServiceGrpcClient struct {
 }
 
 func NewTaskServiceGrpcClient(serverAddr string) (*TaskServiceGrpcClient, error) {
-	conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := client2.NewGrpcResilientClient(nil, serverAddr)
 	if err != nil {
 		return nil, err
 	}

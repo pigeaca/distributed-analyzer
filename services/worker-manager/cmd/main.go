@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	var cfg = configloader.LoadApplicationConfig[config.Config]("api-gateway")
+	var cfg = configloader.LoadApplicationConfig[config.Config]("worker-manager")
 	bootstrap.StartApplication(&cfg)
 }

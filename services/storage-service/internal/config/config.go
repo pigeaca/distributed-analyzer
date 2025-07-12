@@ -1,12 +1,12 @@
 package config
 
 import (
-	commonConfig "github.com/distributedmarketplace/internal/common/config"
+	"distributed-analyzer/libs/config"
 )
 
 type Config struct {
 	// Server settings
-	commonConfig.ServerConfig `yaml:",inline"`
+	configloader.ServerConfig `yaml:",inline"`
 
 	// Storage settings
 	Storage StorageConfig `yaml:"storage"`
@@ -18,7 +18,7 @@ type Config struct {
 	Cache CacheConfig `yaml:"cache"`
 
 	// Log settings
-	Log commonConfig.LogConfig `yaml:"log"`
+	Log configloader.LogConfig `yaml:"log"`
 }
 
 // StorageConfig holds storage-related configuration

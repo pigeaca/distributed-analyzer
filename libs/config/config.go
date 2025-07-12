@@ -1,5 +1,5 @@
 // Package config provides common configuration structures used across services
-package config
+package configloader
 
 // ServerConfig holds common server configuration settings
 type ServerConfig struct {

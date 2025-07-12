@@ -5,7 +5,7 @@ import (
 	component "distributed-analyzer/libs/application/http"
 	"distributed-analyzer/services/api-gateway/internal/config"
 	"distributed-analyzer/services/api-gateway/internal/http"
-	"gith
+	"github.com/gin-gonic/gin"
 	"log"
 )
 

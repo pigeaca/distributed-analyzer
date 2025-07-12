@@ -1,7 +1,7 @@
 package config
 
 import (
-	commonConfig "github.com/distributedmarketplace/internal/common/config"
+	commonConfig "distributed-analyzer/libs/config"
 )
 
 type Config struct {

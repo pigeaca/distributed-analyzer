@@ -12,8 +12,22 @@ import (
 	"strings"
 )
 
-// LoadApplicationConfig loads configuration from YAML and environment variables using koanf.
+// LoadApplicationConfig loads the configuration and then validates it.
+// It returns the loaded and validated configuration.
+// If validation fails, it panics with an error message.
 func LoadApplicationConfig[T any](prefix string) T {
+	// Load configuration
+	config := loadConfig[T](prefix)
+
+	// Validate configuration
+	if err := ValidateConfig(config); err != nil {
+		panic(fmt.Sprintf("configuration validation failed: %v", err))
+	}
+
+	return config
+}
+
+func loadConfig[T any](prefix string) T {
 	var cfg T
 	k := koanf.New(".")
 
