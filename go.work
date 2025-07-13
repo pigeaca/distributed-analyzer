@@ -1,11 +1,13 @@
-go 1.24
+go 1.24.0
+
+toolchain go1.24.3
 
 use (
 	./libs/application
-	./libs/network
 	./libs/config
 	./libs/kafka
 	./libs/model
+	./libs/network
 	./libs/proto
 
 	./services/api-gateway

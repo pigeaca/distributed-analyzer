@@ -6,15 +6,12 @@ import (
 	"distributed-analyzer/services/api-gateway/internal/config"
 	"distributed-analyzer/services/api-gateway/internal/http"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func StartApplication(cfg *config.Config) {
 	httpComponent := initHttpComponent(cfg)
 	runner := app.NewApplicationRunner(httpComponent)
-	if err := runner.Start(); err != nil {
-		log.Println("Error while starting application", err)
-	}
+	runner.DefaultStart()
 }
 
 func initHttpComponent(cfg *config.Config) *component.GinHttpComponent {

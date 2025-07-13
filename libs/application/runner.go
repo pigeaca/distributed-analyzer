@@ -3,6 +3,7 @@ package application
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -109,6 +110,24 @@ func (r *Runner) RegisterComponent(c Component) *Runner {
 	defer r.mu.Unlock()
 	r.components = append(r.components, c)
 	return r
+}
+
+func (r *Runner) DefaultStart() {
+	if err := r.Start(); err != nil {
+		var appErr *AppError
+		if errors.As(err, &appErr) {
+			switch appErr.Type {
+			case ErrorTypeStartup:
+				log.Fatalf("Failed to start application: %v", err)
+			case ErrorTypeShutdown:
+				log.Fatalf("Error during shutdown: %v", err)
+			default:
+				log.Fatalf("Application error: %v", err)
+			}
+		} else {
+			log.Fatalf("Failed to start application: %v", err)
+		}
+	}
 }
 
 // Start initializes and starts all registered components.

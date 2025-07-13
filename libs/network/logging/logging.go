@@ -7,6 +7,17 @@ import (
 	"time"
 )
 
+func ServerInterceptor() grpc.UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+		log.Printf("[gRPC] → request: %s", info.FullMethod)
+		resp, err := handler(ctx, req)
+		if err != nil {
+			log.Printf("[gRPC] → error: %v", err)
+		}
+		return resp, err
+	}
+}
+
 func ClientInterceptor() grpc.UnaryClientInterceptor {
 	return func(
 		ctx context.Context,

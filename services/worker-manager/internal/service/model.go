@@ -52,6 +52,18 @@ type Worker struct {
 	mu sync.RWMutex
 }
 
+func NewWorker(id, address string, capabilities []string) *Worker {
+	return &Worker{
+		ID:            id,
+		Address:       address,
+		Capabilities:  capabilities,
+		Status:        WorkerStatusActive,
+		RegisteredAt:  time.Now(),
+		CurrentLoad:   0,
+		LastHeartbeat: time.Now(),
+	}
+}
+
 // UpdateStatus updates the status of the worker
 func (w *Worker) UpdateStatus(status WorkerStatus) {
 	w.mu.Lock()

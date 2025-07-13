@@ -5,7 +5,7 @@ import (
 	"distributed-analyzer/services/worker/internal/config"
 )
 
-func StartApplication(cfg *config.Config) error {
+func StartApplication(cfg *config.Config) {
 	runner := app.NewApplicationRunner()
-	return runner.Start()
+	runner.DefaultStart()
 }

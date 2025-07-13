@@ -1,10 +1,16 @@
 package service
 
 import (
+	"context"
+	"distributed-analyzer/services/worker-manager/internal/discovery"
+	k8s2 "distributed-analyzer/services/worker-manager/internal/discovery/k8s"
 	"errors"
+	"log"
 	"sync"
 	"time"
 )
+
+const WorkerServiceName = "worker"
 
 var (
 	// ErrWorkerNotFound is returned when a worker is not found in the registry
@@ -19,6 +25,8 @@ type WorkerRegistry struct {
 	// workers is a map of worker ID to worker
 	workers map[string]*Worker
 
+	discovery discovery.ServiceDiscovery
+
 	// mu is a mutex to protect concurrent access to the worker's map
 	mu sync.RWMutex
 }
@@ -26,7 +34,59 @@ type WorkerRegistry struct {
 // NewWorkerRegistry creates a new worker registry
 func NewWorkerRegistry() *WorkerRegistry {
 	return &WorkerRegistry{
-		workers: make(map[string]*Worker),
+		workers:   make(map[string]*Worker),
+		discovery: k8s2.NewServiceDiscovery(),
+	}
+}
+
+func (r *WorkerRegistry) StartRegistration(ctx context.Context) {
+	go r.runAutoDiscovery(ctx, 10*time.Second)
+}
+
+func (r *WorkerRegistry) runAutoDiscovery(ctx context.Context, interval time.Duration) {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			log.Println("Stopping worker discovery")
+			return
+		case <-ticker.C:
+			r.runDiscoveryOnce()
+		}
+	}
+}
+
+func (r *WorkerRegistry) runDiscoveryOnce() {
+	services, err := r.discovery.DiscoverServices(WorkerServiceName)
+	if err != nil {
+		log.Printf("Discovery error: %v", err)
+		return
+	}
+	r.RegisterServices(services)
+}
+
+// RegisterServices registers a new worker service and removes any stale workers
+func (r *WorkerRegistry) RegisterServices(services []*discovery.Service) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	active := make(map[string]struct{})
+	for _, s := range services {
+		active[s.Addr] = struct{}{}
+
+		if _, exists := r.workers[s.Addr]; !exists {
+			r.workers[s.Addr] = NewWorker(s.Addr, s.Addr, []string{})
+			log.Printf("✔ Registered new worker: %s", s.Addr)
+		}
+	}
+
+	for id := range r.workers {
+		if _, stillActive := active[id]; !stillActive {
+			delete(r.workers, id)
+			log.Printf("✖ Unregistered stale worker: %s", id)
+		}
 	}
 }
 
@@ -41,15 +101,7 @@ func (r *WorkerRegistry) Register(id, address string, capabilities []string) (*W
 	}
 
 	// Create a new worker
-	worker := &Worker{
-		ID:            id,
-		Address:       address,
-		Status:        WorkerStatusActive,
-		Capabilities:  capabilities,
-		LastHeartbeat: time.Now(),
-		RegisteredAt:  time.Now(),
-		CurrentLoad:   0,
-	}
+	worker := NewWorker(id, address, capabilities)
 
 	// Add the worker to the registry
 	r.workers[id] = worker
