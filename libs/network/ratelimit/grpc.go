@@ -39,7 +39,8 @@ func DefaultGRPCConfig() GRPCConfig {
 	}
 }
 
-func (l *GRPCLimiter) ClientRateLimiterInterceptor() grpc.UnaryClientInterceptor {
+func ClientInterceptor(config GRPCConfig) grpc.UnaryClientInterceptor {
+	limiter := rate.NewLimiter(rate.Limit(config.Rate), config.Burst)
 	return func(
 		ctx context.Context,
 		method string,
@@ -49,29 +50,9 @@ func (l *GRPCLimiter) ClientRateLimiterInterceptor() grpc.UnaryClientInterceptor
 		invoker grpc.UnaryInvoker,
 		opts ...grpc.CallOption,
 	) error {
-		if err := l.limiter.Wait(ctx); err != nil {
+		if err := limiter.Wait(ctx); err != nil {
 			return grpc.Errorf(grpc.Code(err), "rate limit exceeded: %v", err)
 		}
 		return invoker(ctx, method, req, reply, cc, opts...)
 	}
-}
-
-// NewGRPCLimiter creates a new gRPC rate limiter with the given configuration.
-func NewGRPCLimiter(config GRPCConfig) *GRPCLimiter {
-	limiter := &GRPCLimiter{
-		limiter: rate.NewLimiter(rate.Limit(config.Rate), config.Burst),
-		config:  config,
-	}
-
-	return limiter
-}
-
-// there isExcluded checks if the method is excluded from rate limiting.
-func (l *GRPCLimiter) isExcluded(method string) bool {
-	for _, excludedMethod := range l.config.ExcludedMethods {
-		if method == excludedMethod {
-			return true
-		}
-	}
-	return false
 }

@@ -69,8 +69,8 @@ func TestRunnerRegister(t *testing.T) {
 	comp1 := NewMockComponent("comp1")
 	comp2 := NewMockComponent("comp2")
 
-	runner.Register(comp1)
-	runner.Register(comp2)
+	runner.RegisterComponent(comp1)
+	runner.RegisterComponent(comp2)
 
 	if len(runner.components) != 2 {
 		t.Errorf("Expected 2 components, got %d", len(runner.components))

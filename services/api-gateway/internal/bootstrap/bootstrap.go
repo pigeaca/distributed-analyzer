@@ -10,14 +10,14 @@ import (
 )
 
 func StartApplication(cfg *config.Config) {
-	httpComponent := initHttp(cfg)
+	httpComponent := initHttpComponent(cfg)
 	runner := app.NewApplicationRunner(httpComponent)
 	if err := runner.Start(); err != nil {
 		log.Println("Error while starting application", err)
 	}
 }
 
-func initHttp(cfg *config.Config) *component.GinHttpComponent {
+func initHttpComponent(cfg *config.Config) *component.GinHttpComponent {
 	var routes = http.RegisterRoutes(gin.Default(), cfg)
 	httpComponent := component.NewGinHttpComponent(&cfg.ServerConfig, routes)
 	return httpComponent

@@ -30,7 +30,7 @@ COPY --from=builder /app/services/api-gateway/api-gateway .
 COPY configs/api-gateway.yml ./configs/api-gateway.yml
 
 # Expose the port the service runs on
-EXPOSE 8082
+EXPOSE 8081
 
 # Run the application
 CMD ["./api-gateway"]

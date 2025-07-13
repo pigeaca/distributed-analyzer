@@ -36,7 +36,7 @@ type Config struct {
 	RetryableErrors func(error) bool
 }
 
-func RetryInterceptor(cfg Config) grpc.UnaryClientInterceptor {
+func ClientInterceptor(cfg Config) grpc.UnaryClientInterceptor {
 	return func(
 		ctx context.Context,
 		method string,
@@ -111,29 +111,4 @@ func Retry(ctx context.Context, config Config, operation func() error) error {
 
 	// Retry the operation with backoff
 	return backoff.Retry(retryFunc, b)
-}
-
-// RetryWithResult retries the given function with exponential backoff and returns the result.
-func RetryWithResult[T any](ctx context.Context, config Config, operation func() (T, error)) (T, error) {
-	var result T
-	var resultErr error
-
-	// Create a wrapper function that stores the result
-	wrapper := func() error {
-		var err error
-		result, err = operation()
-		if err != nil {
-			resultErr = err
-			return err
-		}
-		return nil
-	}
-
-	// Retry the wrapper function
-	err := Retry(ctx, config, wrapper)
-	if err != nil {
-		return result, resultErr
-	}
-
-	return result, nil
 }

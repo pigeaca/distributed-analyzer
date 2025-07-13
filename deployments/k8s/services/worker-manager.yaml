@@ -1,25 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-gateway
+  name: worker-manager
   labels:
-    app: api-gateway
+    app: worker-manager
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
-      app: api-gateway
+      app: worker-manager
   template:
     metadata:
       labels:
-        app: api-gateway
+        app: worker-manager
     spec:
       containers:
-      - name: api-gateway
-        image: distributed-analyzer/api-gateway:latest
+      - name: worker-manager
+        image: distributed-analyzer/worker-manager:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8081
+        - containerPort: 8086
+        - containerPort: 9086  # gRPC port
         env:
         - name: KAFKA_BROKERS
           value: "kafka:9092"
@@ -32,35 +33,40 @@ spec:
             cpu: "500m"
         volumeMounts:
         - name: config-volume
-          mountPath: /app/configs/api-gateway
+          mountPath: /app/configs/worker-manager
       volumes:
       - name: config-volume
         configMap:
-          name: api-gateway-config
+          name: worker-manager-config
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway
+  name: worker-manager
   labels:
-    app: api-gateway
+    app: worker-manager
 spec:
   ports:
-  - port: 81
-    targetPort: 8081
+  - port: 86
+    targetPort: 8086
     name: http
+  - port: 96
+    targetPort: 9086
+    name: grpc
   selector:
-    app: api-gateway
-  type: LoadBalancer
+    app: worker-manager
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: api-gateway-config
+  name: worker-manager-config
 data:
   config.yaml: |
     kafka:
       brokers:
         - kafka:9092
+    grpc:
+      port: 9086
     server:
-      port: 8081
+      port: 8086

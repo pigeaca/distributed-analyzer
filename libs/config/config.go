@@ -22,7 +22,6 @@ type LogConfig struct {
 }
 
 type KafkaConfig struct {
-	Topics  []string `yaml:"topics"  env:"KAFKA_TOPICS"`
 	Brokers []string `yaml:"brokers" env:"KAFKA_BROKERS" env-default:"localhost:9092"`
 	GroupID string   `yaml:"group_id" env:"KAFKA_GROUP_ID"`
 }

@@ -16,8 +16,6 @@ import (
 	"errors"
 	"fmt"
 	stdgrpc "google.golang.org/grpc"
-	"google.golang.org
-	stdgrpc "google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 	"log"
 	"time"
@@ -45,7 +43,7 @@ func StartApplication(cfg *config.Config) {
 	// Register cleanup handlers
 	cleanupHandler := func() error {
 		log.Println("Running task-service specific cleanup...")
-		// Add any task-service specific cleanup logic here
+		// Add any task-service-specific cleanup logic here
 		return nil
 	}
 

@@ -14,7 +14,7 @@ func RegisterRoutes(r *gin.Engine, cfg *config.Config) *gin.Engine {
 }
 
 func RegisterTaskRoutes(rg *gin.RouterGroup, cfg *config.Config) {
-	taskServiceGrpcClient, _ := grpc.NewTaskServiceGrpcClient(cfg.Services.Task.GrpcAddr)
+	taskServiceGrpcClient, _ := grpc.NewTaskServiceGrpcClient(cfg.Services.Task.GRPCAddr)
 	handler := handlers.NewTaskHandler(taskServiceGrpcClient)
 	handler.Register(rg.Group("/task"))
 }

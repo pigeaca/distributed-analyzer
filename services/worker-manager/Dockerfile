@@ -31,6 +31,7 @@ COPY configs/worker-manager.yml ./configs/worker-manager.yml
 
 # Expose the port the service runs on
 EXPOSE 8086
+EXPOSE 9086
 
 # Run the application
 CMD ["./worker-manager"]

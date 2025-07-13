@@ -31,7 +31,8 @@ COPY --from=builder /app/services/result-service/result-service .
 COPY configs/result-service ./configs/result-service/
 
 # Expose the port the service runs on
-EXPOSE 8080
+EXPOSE 8084
+EXPOSE 9084
 
 # Run the application
 CMD ["./result-service"]

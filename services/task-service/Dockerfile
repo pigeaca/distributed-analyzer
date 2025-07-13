@@ -31,6 +31,7 @@ COPY configs/task-service ./configs/task-service/
 
 # Expose the port the service runs on
 EXPOSE 8082
+EXPOSE 9082
 
 # Run the application
 CMD ["./task-service"]

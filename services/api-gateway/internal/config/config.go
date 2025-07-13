@@ -1,15 +1,11 @@
 package config
 
+import configloader "distributed-analyzer/libs/config"
+
 type Config struct {
-	ServerConfig ServerConfig `yaml:"server"`
+	configloader.ServerConfig `yaml:",inline"`
 
 	Services ServicesConfig `yaml:"services"`
-}
-
-type ServerConfig struct {
-	Port     int    `yaml:"port"      env:"SERVER_PORT"      env-default:"8080"`
-	GRPCPort int    `yaml:"grpc_port" env:"SERVER_GRPC_PORT" env-default:"9090"`
-	Env      string `yaml:"env"       env:"ENV"              env-default:"development"`
 }
 
 type ServicesConfig struct {

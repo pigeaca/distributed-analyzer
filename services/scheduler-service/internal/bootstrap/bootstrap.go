@@ -7,7 +7,7 @@ import (
 	"distributed-analyzer/services/scheduler-service/internal/config"
 	"distributed-analyzer/services/scheduler-service/internal/kafka/handler"
 	"distributed-analyzer/services/scheduler-service/internal/service"
-	"erro
+	"errors"
 	"log"
 	"time"
 )
@@ -33,7 +33,7 @@ func StartApplication(cfg *config.Config) {
 	// Register cleanup handlers
 	cleanupHandler := func() error {
 		log.Println("Running scheduler-service specific cleanup...")
-		// Add any scheduler-service specific cleanup logic here
+		// Add any scheduler-service-specific cleanup logic here
 		return nil
 	}
 

@@ -97,14 +97,14 @@ func (r *Runner) Defer(fn func() error) {
 func NewApplicationRunner(components ...Component) *Runner {
 	r := &Runner{}
 	for _, cn := range components {
-		r.Register(cn)
+		r.RegisterComponent(cn)
 	}
 	return r
 }
 
-// Register adds a component to the Runner.
+// RegisterComponent adds a component to the Runner.
 // Returns the Runner for method chaining.
-func (r *Runner) Register(c Component) *Runner {
+func (r *Runner) RegisterComponent(c Component) *Runner {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.components = append(r.components, c)
@@ -166,7 +166,7 @@ func (r *Runner) Start() error {
 	// Wait for either all components to start or a shutdown signal
 	select {
 	case <-started:
-		// All components started successfully, now wait for shutdown signal
+		// All components started successfully, now wait for the shutdown signal
 		<-sigCh
 		log.Println("Shutdown signal received. Stopping components...")
 		return startupErr // Will be nil if everything went well

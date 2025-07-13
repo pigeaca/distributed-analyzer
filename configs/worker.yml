@@ -1,33 +1,24 @@
-# Worker Service Configuration
-
-# Server settings
-port: 8086
-grpc_port: 9086
+port: "8086"
+grpc_port: "9086"
 env: development
 
-# Kafka settings
 kafka:
-  brokers: localhost:9092
-  group_id: worker
+  brokers: ["localhost:9092"]
+  group_id: worker-service
   topics:
     assignments: task_assignments
     results: results
 
-# Service connections
 services:
   storage:
+    url: http://localhost:8085
     grpc_addr: localhost:9085
   result:
+    url: http://localhost:8084
     grpc_addr: localhost:9084
 
-# Worker settings
 worker:
-  capabilities:
-    - go_build
-    - go_test
-    - go_lint
-    - go_benchmark
-    - go_race
+  capabilities: [go_build, go_test]
   max_concurrent_tasks: 5
   task_timeout: 300s
   sandbox:
@@ -38,7 +29,6 @@ worker:
       cpu_limit: 1
       memory_limit: 512MB
 
-# Logging
 log:
   level: info
   format: json

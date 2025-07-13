@@ -158,7 +158,7 @@ func convertWorkerToProto(w *service.Worker) *worker.Worker {
 		Name:         w.Address,
 		Status:       string(w.Status),
 		Capabilities: capabilities,
-		Resources:    nil, // We don't track resources in our implementation
+		Resources:    nil, // @TODO We don't track resources in our implementation
 		LastSeen:     timestamppb.New(w.LastHeartbeat),
 	}
 }

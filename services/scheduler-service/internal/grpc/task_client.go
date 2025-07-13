@@ -3,7 +3,7 @@ package grpc
 import (
 	"context"
 	"distributed-analyzer/libs/model"
-	client2 "distributed-analyzer/libs/network/client"
+	"distributed-analyzer/libs/network/client"
 	pb "distributed-analyzer/libs/proto/task"
 	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -15,15 +15,15 @@ type TaskServiceGrpcClient struct {
 }
 
 func NewTaskServiceGrpcClient(serverAddr string) (*TaskServiceGrpcClient, error) {
-	conn, err := client2.NewGrpcResilientClient(nil, serverAddr)
+	conn, err := client.NewGrpcResilientClient(nil, serverAddr)
 	if err != nil {
 		return nil, err
 	}
 
-	client := pb.NewTaskServiceClient(conn)
+	taskServiceClient := pb.NewTaskServiceClient(conn)
 
 	return &TaskServiceGrpcClient{
-		client: client,
+		client: taskServiceClient,
 		conn:   conn,
 	}, nil
 }

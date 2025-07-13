@@ -7,7 +7,7 @@ env: development
 
 # Kafka settings
 kafka:
-  brokers: localhost:9092
+  brokers: ["localhost:9092"]
   group_id: result-service
   topics:
     results: results

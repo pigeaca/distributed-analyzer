@@ -31,7 +31,8 @@ COPY --from=builder /app/services/scheduler-service/scheduler-service .
 COPY configs/scheduler-service ./configs/scheduler-service/
 
 # Expose the port the service runs on
-EXPOSE 8080
+EXPOSE 8083
+EXPOSE 9083
 
 # Run the application
 CMD ["./scheduler-service"]

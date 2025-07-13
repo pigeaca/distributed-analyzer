@@ -3,11 +3,10 @@ package grpc
 import (
 	"context"
 	"distributed-analyzer/libs/model"
-	client2 "distributed-analyzer/libs/network/client"
+	"distributed-analyzer/libs/network/client"
 	pbW "distributed-analyzer/libs/proto/worker"
 	"fmt"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 )
 
@@ -19,14 +18,14 @@ type WorkerManagerClient struct {
 
 // NewWorkerManagerClient creates a new WorkerManagerClient
 func NewWorkerManagerClient(address string) (*WorkerManagerClient, error) {
-	conn, err := client2.NewGrpcResilientClient(nil, address)
+	conn, err := client.NewGrpcResilientClient(nil, address)
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to WorkerManager service: %w", err)
 	}
 
-	client := pbW.NewWorkerManagerServiceClient(conn)
+	managerServiceClient := pbW.NewWorkerManagerServiceClient(conn)
 	return &WorkerManagerClient{
-		client: client,
+		client: managerServiceClient,
 		conn:   conn,
 	}, nil
 }

@@ -1,7 +1,7 @@
 // @title Distributed Marketplace API
 // @version 1.0
 // @description API Gateway for the Distributed Marketplace system.
-// @host localhost:8080
+// @host localhost:8081
 // @BasePath /api
 package main
 
@@ -11,7 +11,9 @@ import (
 	"distributed-analyzer/services/api-gateway/internal/config"
 )
 
+const ApiGatewayApplicationName = "api-gateway"
+
 func main() {
-	var cfg = configloader.LoadApplicationConfig[config.Config]("api-gateway")
+	var cfg = configloader.LoadApplicationConfig[config.Config](ApiGatewayApplicationName)
 	bootstrap.StartApplication(&cfg)
 }

@@ -31,7 +31,8 @@ COPY --from=builder /app/services/storage-service/storage-service .
 COPY configs/storage-service ./configs/storage-service/
 
 # Expose the port the service runs on
-EXPOSE 8080
+EXPOSE 8085
+EXPOSE 9085
 
 # Run the application
 CMD ["./storage-service"]

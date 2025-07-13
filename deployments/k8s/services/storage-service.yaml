@@ -19,7 +19,7 @@ spec:
         image: distributed-analyzer/storage-service:latest
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - containerPort: 9085
         env:
         - name: KAFKA_BROKERS
           value: "kafka:9092"
@@ -50,9 +50,9 @@ metadata:
     app: storage-service
 spec:
   ports:
-  - port: 8080
-    targetPort: 8080
-    name: http
+  - port: 9085
+    targetPort: 9085
+    name: grpc
   selector:
     app: storage-service
   type: ClusterIP
@@ -67,6 +67,4 @@ data:
       brokers:
         - kafka:9092
     server:
-      port: 8080
-    storage:
-      path: /app/data
+      port: 9085

@@ -2,6 +2,7 @@ package client
 
 import (
 	"distributed-analyzer/libs/network/circuitbreaker"
+	"distributed-analyzer/libs/network/logging"
 	"distributed-analyzer/libs/network/ratelimit"
 	"distributed-analyzer/libs/network/retry"
 	"google.golang.org/grpc"
@@ -25,16 +26,8 @@ func NewGrpcResilientClient(cfg *Config, grpcTarget string) (*grpc.ClientConn, e
 		}
 	}
 
-	limiterInterceptor := ratelimit.NewGRPCLimiter(cfg.RateLimitCfg).ClientRateLimiterInterceptor()
-	circuitBreakerInterceptor := circuitbreaker.New(cfg.CBConfig).CircuitBreakerInterceptor()
-	retryInterceptor := retry.RetryInterceptor(cfg.RetryConfig)
-
 	dialOption := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	dialOption = append(dialOption, grpc.WithChainUnaryInterceptor(
-		limiterInterceptor,
-		circuitBreakerInterceptor,
-		retryInterceptor,
-	))
+	dialOption = append(dialOption, grpc.WithChainUnaryInterceptor(getGrpcInterceptors(cfg)...))
 
 	conn, err := grpc.NewClient(grpcTarget, dialOption...)
 	if err != nil {
@@ -42,4 +35,13 @@ func NewGrpcResilientClient(cfg *Config, grpcTarget string) (*grpc.ClientConn, e
 	}
 
 	return conn, nil
+}
+
+func getGrpcInterceptors(cfg *Config) []grpc.UnaryClientInterceptor {
+	return []grpc.UnaryClientInterceptor{
+		logging.ClientInterceptor(),
+		ratelimit.ClientInterceptor(cfg.RateLimitCfg),
+		circuitbreaker.ClientInterceptor(cfg.CBConfig),
+		retry.ClientInterceptor(cfg.RetryConfig),
+	}
 }

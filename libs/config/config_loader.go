@@ -3,10 +3,12 @@ package configloader
 import (
 	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/jeremywohl/flatten"
 	"gopkg.in/yaml.v3"
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -28,19 +30,37 @@ func LoadApplicationConfig[T any](prefix string) T {
 		log.Fatalf("failed to read environment variables: %v", err)
 	}
 
-	printFinalConfig(cfg)
+	printEnvStyle(cfg)
 
 	return cfg
 }
 
-func printFinalConfig[T any](cfg T) {
-	out, err := yaml.Marshal(cfg)
-	if err != nil {
-		log.Printf("Failed to marshal config to YAML: %v", err)
+func printEnvStyle(cfg any) {
+	yamlData, err := yaml.Marshal(cfg)
+
+	var obj map[string]interface{}
+
+	if err := yaml.Unmarshal(yamlData, &obj); err != nil {
+		log.Printf("unmarshal error: %v", err)
 		return
 	}
+
+	flatMap, err := flatten.Flatten(obj, "", flatten.DotStyle)
+	if err != nil {
+		log.Printf("Failed to flatten config: %v", err)
+		return
+	}
+
+	var keys []string
+	for k := range flatMap {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	
 	log.Println("Configuration:")
-	log.Println(string(out))
+	for _, k := range keys {
+		log.Printf("%s=%v", k, flatMap[k])
+	}
 }
 
 func resolveConfigPath(prefix string) string {
